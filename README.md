@@ -31,9 +31,25 @@ Both ends implement the same three pieces:
 - **Eval** — measure the cost / privacy / quality tradeoff on real cases.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and the
-tradeoffs, and [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md) for the real-model
-benchmark: three local models on a cost-quality Pareto, where the router matches
-frontier quality at 59% lower cost.
+tradeoffs.
+
+## Experiments (real models, no mock)
+
+Six experiments on real inference — local models via Ollama, hosted APIs
+(Anthropic, OpenAI, DeepSeek), and a self-hosted 72B on a rented A100 — each
+scored by an independent `claude-opus-5` judge. Full writeups and charts in
+[`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md); the honest headline of each:
+
+1. **Cost-quality Pareto** — a gated router matches frontier quality at 59% lower cost, and the tier ladder turns out non-monotonic (a 2B scored below a 1B).
+2. **Constrained decoding** — with a clear prompt, small models already emit 100% valid JSON; the real win is an 11x token collapse, not validity.
+3. **Judge bias** — a model judging its own tier inflates it; a self-hosted judge is a lenient upper bound (edge 0.69 → 0.43 under an independent judge).
+4. **Edge → cloud, 3 providers** — the router auto-selects the cloud by measured value, and an open model (DeepSeek) beat both proprietary frontiers on quality *and* cost.
+5. **Predictive routing** — deciding from the query alone (route once) has a 9x-cheaper ceiling than cascade, but a naive predictor realizes only half of it; the predictor is the work.
+6. **Serving a 72B** — vLLM continuous batching gives 12.1x throughput (vs 1.1x on Ollama), yet self-hosting still loses to a cheap hosted API until near-saturation.
+
+One theme runs through them: a router, or a self-hosted GPU, is not automatically
+cheaper. Strong-and-cheap hosted open models keep eroding the case, and the
+experiments say so rather than hiding it.
 
 ## The edge client, in the browser
 
