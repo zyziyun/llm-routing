@@ -182,6 +182,11 @@ live scrape of Prometheus `/metrics`:
 
 ![gateway monitoring demo](docs/screenshots/gateway-demo.svg)
 
+Or exercise a real uvicorn server end to end over HTTP (routing, SSE streaming,
+auth, rate limit, budget, metrics) with `bash demo/live_demo.sh`:
+
+![gateway live HTTP demo](docs/screenshots/gateway-live-demo.svg)
+
 ### Run it locally
 
 ```bash

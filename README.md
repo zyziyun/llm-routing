@@ -41,12 +41,14 @@ bytes off device, PII kept on device, and cost saved.
 
 ![Edge client — on-device PII redaction before escalation](packages/edge-client/docs/screenshots/02-pii-redaction.png)
 
-## The gateway, in the terminal
+## The gateway, over HTTP
 
-`make demo` drives the server-side gateway with a scripted mix of requests and
-renders a routing + metrics dashboard, ending with a live Prometheus scrape:
+`bash packages/gateway/demo/live_demo.sh` boots a real uvicorn server and
+exercises it end to end: tiered routing on the OpenAI-compatible endpoint, SSE
+streaming, auth (401), rate limiting (429), budget caps (402), and a live
+Prometheus scrape.
 
-![gateway monitoring demo](packages/gateway/docs/screenshots/gateway-demo.svg)
+![gateway live HTTP demo](packages/gateway/docs/screenshots/gateway-live-demo.svg)
 
 ## Quickstart
 

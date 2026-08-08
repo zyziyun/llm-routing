@@ -15,6 +15,17 @@ PYTHONPATH=src python demo/demo.py
 # or from the repo root: make demo
 ```
 
+## 1b. Live HTTP demo against a real server
+
+Boots a real `uvicorn` server and drives it over HTTP end to end: tiered
+routing, SSE streaming, auth (401), rate limiting (429), budget caps (402), and
+a Prometheus scrape. Tears the server down at the end.
+
+```bash
+cd packages/gateway
+bash demo/live_demo.sh
+```
+
 ## 2. Full stack: gateway + Prometheus + Grafana
 
 Real metrics scraped into Prometheus and graphed in Grafana.

@@ -24,10 +24,10 @@
 <text x="22" y="375" fill="#3ddc97" font-size="14" xml:space="preserve">  edge     ████████████············ 4</text>
 <text x="22" y="396" fill="#f7a23b" font-size="14" xml:space="preserve">  cheap    ███····················· 1</text>
 <text x="22" y="417" fill="#f7a23b" font-size="14" xml:space="preserve">  frontier ██████·················· 2</text>
-<text x="22" y="438" fill="#5b8cff" font-size="14" xml:space="preserve">  cache    ███····················· 1</text>
+<text x="22" y="438" fill="#e6e9ef" font-size="14" xml:space="preserve">  cache    ███····················· 1</text>
 <text x="22" y="459" fill="#e6e9ef" font-size="14" xml:space="preserve"></text>
 <text x="22" y="480" fill="#e6e9ef" font-size="14" xml:space="preserve">  requests        8</text>
-<text x="22" y="501" fill="#5b8cff" font-size="14" xml:space="preserve">  cache hits      1</text>
+<text x="22" y="501" fill="#e6e9ef" font-size="14" xml:space="preserve">  cache hits      1</text>
 <text x="22" y="522" fill="#e6e9ef" font-size="14" xml:space="preserve">  cost            $0.00081   (all-frontier baseline $0.08000)</text>
 <text x="22" y="543" fill="#e6e9ef" font-size="14" xml:space="preserve">  cost saved      99%</text>
 <text x="22" y="564" fill="#e6e9ef" font-size="14" xml:space="preserve"></text>
