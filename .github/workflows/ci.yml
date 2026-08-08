@@ -17,6 +17,8 @@ jobs:
         run: PYTHONPATH=src pytest -q
       - name: eval smoke
         run: PYTHONPATH=src python eval/run_eval.py
+      - name: quality regression gate
+        run: PYTHONPATH=src python eval/run_quality_gate.py
 
   gateway-docker:
     runs-on: ubuntu-latest
