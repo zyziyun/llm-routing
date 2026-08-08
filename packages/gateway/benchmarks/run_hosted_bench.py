@@ -36,22 +36,23 @@ SHOTS = HERE.parent / "docs" / "screenshots"
 OLLAMA = "http://localhost:11434/v1/chat/completions"
 ANTHROPIC = "https://api.anthropic.com/v1/messages"
 OPENAI = "https://api.openai.com/v1/chat/completions"
+DEEPSEEK = "https://api.deepseek.com/v1/chat/completions"
 JUDGE_MODEL = "claude-opus-5"  # independent gold judge; never a tier
 
 # (name, kind, model, in_$/1k, out_$/1k). Local prices are equivalent-hosted
 # estimates; cloud prices are published rates (verify against your own contract).
+# Clouds are listed cheapest-first; deepseek is an open-weight model served via
+# a hosted OpenAI-compatible API, so the router treats it as just another tier.
 TIERS = [
     ("edge", "ollama", "llama3.2:1b", 0.0001, 0.0001),
     ("local-frontier", "ollama", "qwen2.5-coder:14b", 0.01, 0.01),
-    ("cloud:sonnet", "anthropic", "claude-sonnet-5", 0.003, 0.015),
+    ("cloud:deepseek", "deepseek", "deepseek-chat", 0.00027, 0.0011),
     ("cloud:gpt5", "openai", "gpt-5", 0.00125, 0.010),
+    ("cloud:sonnet", "anthropic", "claude-sonnet-5", 0.003, 0.015),
 ]
-# The escalation chain the router walks, cost-ordered: cheapest local first,
-# then the cloud tier, which itself auto-selects across providers cheapest-first.
-# Nothing is hardcoded to one cloud model -- the quality gate picks whichever
-# cloud answer first clears the bar, so the router runs autonomously and stays
-# provider-agnostic (both clouds speak the OpenAI-compatible shape).
-ROUTER_CHAIN = ["edge", "local-frontier", "cloud:gpt5", "cloud:sonnet"]
+# Env key each kind needs; a tier is skipped when its key is absent so the run
+# adapts to whatever providers you have configured. ollama needs no key.
+KEY_ENV = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY", "deepseek": "DEEPSEEK_API_KEY"}
 
 
 def _env() -> None:
@@ -87,6 +88,17 @@ def generate(kind: str, model: str, prompt: str) -> dict:
                                         "content-type": "application/json"},
                        json={"model": model, "messages": [{"role": "user", "content": prompt}],
                              "max_completion_tokens": 2000}, timeout=600.0)
+        r.raise_for_status()
+        d = r.json(); u = d.get("usage", {})
+        text = d["choices"][0]["message"]["content"] or ""
+        pt, ct = u.get("prompt_tokens", 0), u.get("completion_tokens", 0)
+    elif kind == "deepseek":
+        # Open-weight model behind an OpenAI-compatible hosted API. Standard
+        # params (deepseek-chat is the non-reasoning V3; takes max_tokens/temperature).
+        r = httpx.post(DEEPSEEK, headers={"Authorization": f"Bearer {os.environ['DEEPSEEK_API_KEY']}",
+                                          "content-type": "application/json"},
+                       json={"model": model, "messages": [{"role": "user", "content": prompt}],
+                             "max_tokens": 512, "temperature": 0.2}, timeout=600.0)
         r.raise_for_status()
         d = r.json(); u = d.get("usage", {})
         text = d["choices"][0]["message"]["content"] or ""
@@ -128,11 +140,15 @@ def cost(cell: dict, name: str) -> float:
 def main() -> None:
     _env()
     tasks = [json.loads(l) for l in (HERE / "tasks.jsonl").read_text().splitlines() if l.strip()]
-    names = [t[0] for t in TIERS]
+    tiers = [t for t in TIERS if t[1] == "ollama" or os.environ.get(KEY_ENV.get(t[1], ""))]
+    names = [t[0] for t in tiers]
+    skipped = [t[0] for t in TIERS if t not in tiers]
+    if skipped:
+        print(f"skipping (no key): {skipped}")
     matrix: dict[str, dict[str, dict]] = {}
     for i, task in enumerate(tasks, 1):
         matrix[task["id"]] = {}
-        for name, kind, model, _, _ in TIERS:
+        for name, kind, model, _, _ in tiers:
             g = generate(kind, model, task["prompt"])
             if "schema" in task:
                 score = 1.0 if valid_json(g["text"], task["schema"]) else 0.0
@@ -168,17 +184,29 @@ def main() -> None:
         n = len(matrix)
         return {"quality": round(q / n, 3), "cost": round(c, 6), "latency_ms": round(lat / n, 1), "mix": mix}
 
-    # Two router shapes: "2cloud" tries both clouds in series (autonomous but it
-    # double-pays cloud on hard turns); "1cloud" escalates to a single selected
-    # cloud (the better effective-cost one). See docs/EXPERIMENTS.md.
-    single_chain = [n for n in ROUTER_CHAIN if n != "cloud:gpt5"]
-    strategies = {"edge-only": fixed("edge"), "local-frontier-only": fixed("local-frontier"),
-                  "cloud-only:sonnet": fixed("cloud:sonnet"), "cloud-only:gpt5": fixed("cloud:gpt5"),
-                  **{f"router-2cloud@{th}": router(ROUTER_CHAIN, th) for th in [0.7, 0.9]},
-                  **{f"router-1cloud@{th}": router(single_chain, th) for th in [0.7, 0.9]}}
+    # Two router shapes, provider-count-agnostic:
+    #   cascade  -- walk every cloud in series until one clears the gate. Autonomous
+    #               and provider-agnostic, but it double-pays cloud on hard turns.
+    #   select   -- escalate to ONE cloud, the best measured quality-per-dollar. This
+    #               is the predictive-routing fix (route to the right cloud, don't walk).
+    price_in = {t[0]: t[3] for t in TIERS}
+    local_names = [n for n in names if not n.startswith("cloud:")]
+    cloud_names = sorted((n for n in names if n.startswith("cloud:")), key=lambda n: price_in[n])
+    cascade_chain = local_names + cloud_names
+    best_cloud = max(cloud_names, key=lambda n: per_tier[n]["quality"] / (per_tier[n]["cost"] + 1e-9)) if cloud_names else None
+    select_chain = local_names + ([best_cloud] if best_cloud else [])
 
-    results = {"judge": JUDGE_MODEL, "tiers": names, "router_chain": ROUTER_CHAIN,
-               "prices": {t[0]: {"in_per_1k": t[3], "out_per_1k": t[4]} for t in TIERS},
+    strategies = {"edge-only": fixed("edge"), "local-frontier-only": fixed("local-frontier")}
+    for cn in cloud_names:
+        strategies[f"cloud-only:{cn.split(':')[1]}"] = fixed(cn)
+    for th in (0.7, 0.9):
+        strategies[f"router-cascade@{th}"] = router(cascade_chain, th)
+        if best_cloud:
+            strategies[f"router-select@{th}"] = router(select_chain, th)
+
+    results = {"judge": JUDGE_MODEL, "tiers": names, "cascade_chain": cascade_chain,
+               "select_chain": select_chain, "best_value_cloud": best_cloud,
+               "prices": {t[0]: {"in_per_1k": t[3], "out_per_1k": t[4]} for t in TIERS if t[0] in names},
                "per_tier": per_tier, "strategies": strategies, "matrix": matrix}
     (HERE / "results_hosted.json").write_text(json.dumps(results, indent=2))
     _charts(per_tier, strategies, names)
@@ -188,12 +216,14 @@ def main() -> None:
     for n in names:
         pt = per_tier[n]
         print(f"  {n:<16}{pt['quality']:>9.2f}{pt['cost']:>10.5f}{pt['latency_ms']:>9.0f}")
-    print("\nstrategies")
-    print(f"  {'strategy':<20}{'quality':>9}{'cost$':>10}{'avg_ms':>9}")
+    print(f"\nbest quality/$ cloud (select target): {best_cloud}")
+    print("strategies")
+    print(f"  {'strategy':<22}{'quality':>9}{'cost$':>10}{'avg_ms':>9}")
     for k, v in strategies.items():
-        print(f"  {k:<20}{v['quality']:>9.2f}{v['cost']:>10.5f}{v['latency_ms']:>9.0f}")
-    print(f"\n  router-2cloud@0.9 mix: {strategies['router-2cloud@0.9']['mix']}")
-    print(f"  router-1cloud@0.9 mix: {strategies['router-1cloud@0.9']['mix']}")
+        print(f"  {k:<22}{v['quality']:>9.2f}{v['cost']:>10.5f}{v['latency_ms']:>9.0f}")
+    if best_cloud:
+        print(f"\n  router-cascade@0.9 mix: {strategies['router-cascade@0.9']['mix']}")
+        print(f"  router-select@0.9  mix: {strategies['router-select@0.9']['mix']}")
     print("wrote benchmarks/results_hosted.json + charts")
 
 
