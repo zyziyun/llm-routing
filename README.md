@@ -41,6 +41,13 @@ bytes off device, PII kept on device, and cost saved.
 
 ![Edge client — on-device PII redaction before escalation](packages/edge-client/docs/screenshots/02-pii-redaction.png)
 
+## The gateway, in the terminal
+
+`make demo` drives the server-side gateway with a scripted mix of requests and
+renders a routing + metrics dashboard, ending with a live Prometheus scrape:
+
+![gateway monitoring demo](packages/gateway/docs/screenshots/gateway-demo.svg)
+
 ## Quickstart
 
 ```bash

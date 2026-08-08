@@ -174,6 +174,14 @@ Two escalation causes are kept distinct: the **circuit breaker** skips a
 provider that is failing or timing out (reliability); the **quality gate**
 escalates a weak-but-working answer (intelligence).
 
+### Live demo
+
+`make demo` (or `PYTHONPATH=src python demo/demo.py`) drives the gateway with a
+scripted mix of requests and prints a routing + metrics dashboard, ending with a
+live scrape of Prometheus `/metrics`:
+
+![gateway monitoring demo](docs/screenshots/gateway-demo.svg)
+
 ### Run it locally
 
 ```bash

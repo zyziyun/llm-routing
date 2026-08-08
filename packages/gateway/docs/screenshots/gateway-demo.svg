@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="556" height="837" viewBox="0 0 556 837" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+<rect width="556" height="837" rx="10" fill="#0f1115"/>
+<rect width="556" height="34" rx="10" fill="#171a21"/>
+<rect y="24" width="556" height="10" fill="#171a21"/>
+<circle cx="20" cy="17" r="6" fill="#ff5f56"/>
+<circle cx="40" cy="17" r="6" fill="#ffbd2e"/>
+<circle cx="60" cy="17" r="6" fill="#27c93f"/>
+<text x="278" y="21" fill="#9aa4b2" font-size="12" text-anchor="middle">make demo</text>
+<text x="22" y="60" fill="#9aa4b2" font-size="14" xml:space="preserve">============================================================</text>
+<text x="22" y="81" fill="#e6e9ef" font-size="14" xml:space="preserve">  llm-gateway  ·  live routing demo</text>
+<text x="22" y="102" fill="#9aa4b2" font-size="14" xml:space="preserve">============================================================</text>
+<text x="22" y="123" fill="#e6e9ef" font-size="14" xml:space="preserve">  kind    difficulty tier      esc  cost$    cache</text>
+<text x="22" y="144" fill="#9aa4b2" font-size="14" xml:space="preserve">  ------------------------------------------------------</text>
+<text x="22" y="165" fill="#3ddc97" font-size="14" xml:space="preserve">  easy    easy       edge      0    0.00000</text>
+<text x="22" y="186" fill="#3ddc97" font-size="14" xml:space="preserve">  easy    easy       edge      0    0.00000</text>
+<text x="22" y="207" fill="#3ddc97" font-size="14" xml:space="preserve">  medium  easy       edge      0    0.00000</text>
+<text x="22" y="228" fill="#3ddc97" font-size="14" xml:space="preserve">  medium  easy       edge      0    0.00000</text>
+<text x="22" y="249" fill="#f7a23b" font-size="14" xml:space="preserve">  hard    hard       frontier  0    0.00043</text>
+<text x="22" y="270" fill="#f7a23b" font-size="14" xml:space="preserve">  hard    hard       frontier  0    0.00036</text>
+<text x="22" y="291" fill="#f7a23b" font-size="14" xml:space="preserve">  schema  easy       cheap     1    0.00002</text>
+<text x="22" y="312" fill="#5b8cff" font-size="14" xml:space="preserve">  repeat  easy       cache     0    0.00000  HIT</text>
+<text x="22" y="333" fill="#e6e9ef" font-size="14" xml:space="preserve"></text>
+<text x="22" y="354" fill="#e6e9ef" font-size="14" xml:space="preserve">  tier distribution</text>
+<text x="22" y="375" fill="#3ddc97" font-size="14" xml:space="preserve">  edge     ████████████············ 4</text>
+<text x="22" y="396" fill="#f7a23b" font-size="14" xml:space="preserve">  cheap    ███····················· 1</text>
+<text x="22" y="417" fill="#f7a23b" font-size="14" xml:space="preserve">  frontier ██████·················· 2</text>
+<text x="22" y="438" fill="#5b8cff" font-size="14" xml:space="preserve">  cache    ███····················· 1</text>
+<text x="22" y="459" fill="#e6e9ef" font-size="14" xml:space="preserve"></text>
+<text x="22" y="480" fill="#e6e9ef" font-size="14" xml:space="preserve">  requests        8</text>
+<text x="22" y="501" fill="#5b8cff" font-size="14" xml:space="preserve">  cache hits      1</text>
+<text x="22" y="522" fill="#e6e9ef" font-size="14" xml:space="preserve">  cost            $0.00081   (all-frontier baseline $0.08000)</text>
+<text x="22" y="543" fill="#e6e9ef" font-size="14" xml:space="preserve">  cost saved      99%</text>
+<text x="22" y="564" fill="#e6e9ef" font-size="14" xml:space="preserve"></text>
+<text x="22" y="585" fill="#e6e9ef" font-size="14" xml:space="preserve">  Prometheus /metrics (selected)</text>
+<text x="22" y="606" fill="#3ddc97" font-size="14" xml:space="preserve">    gw_requests_total{outcome=&quot;accepted&quot;,tier=&quot;edge&quot;} 4.0</text>
+<text x="22" y="627" fill="#f7a23b" font-size="14" xml:space="preserve">    gw_requests_total{outcome=&quot;accepted&quot;,tier=&quot;frontier&quot;} 2.0</text>
+<text x="22" y="648" fill="#3ddc97" font-size="14" xml:space="preserve">    gw_requests_total{outcome=&quot;escalated&quot;,tier=&quot;edge&quot;} 1.0</text>
+<text x="22" y="669" fill="#f7a23b" font-size="14" xml:space="preserve">    gw_requests_total{outcome=&quot;accepted&quot;,tier=&quot;cheap&quot;} 1.0</text>
+<text x="22" y="690" fill="#5b8cff" font-size="14" xml:space="preserve">    gw_requests_total{outcome=&quot;hit&quot;,tier=&quot;cache&quot;} 1.0</text>
+<text x="22" y="711" fill="#3ddc97" font-size="14" xml:space="preserve">    gw_cost_usd_total{tier=&quot;edge&quot;} 0.0</text>
+<text x="22" y="732" fill="#f7a23b" font-size="14" xml:space="preserve">    gw_cost_usd_total{tier=&quot;frontier&quot;} 0.00079</text>
+<text x="22" y="753" fill="#f7a23b" font-size="14" xml:space="preserve">    gw_cost_usd_total{tier=&quot;cheap&quot;} 1.6e-05</text>
+<text x="22" y="774" fill="#9aa4b2" font-size="14" xml:space="preserve">    gw_escalations_total 1.0</text>
+<text x="22" y="795" fill="#9aa4b2" font-size="14" xml:space="preserve">    gw_cache_hits_total 1.0</text>
+<text x="22" y="816" fill="#9aa4b2" font-size="14" xml:space="preserve">============================================================</text>
+</svg>
