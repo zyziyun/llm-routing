@@ -56,6 +56,21 @@ quality gate — nothing is pinned to one model. Needs `ANTHROPIC_API_KEY` and
 python run_hosted_bench.py
 ```
 
+## Predictive routing
+
+`run_predictive_bench.py` compares cascade routing against **predictive** routing
+(decide the tier from the query alone, route once — RouteLLM / semantic-router
+style). It reuses the `run_hosted_bench.py` gold-judge matrix and computes local
+embeddings (`nomic-embed-text` via Ollama), estimating accuracy with leave-one-out
+cross-validation. Writes `results_predictive.json` and
+`../docs/screenshots/predictive-pareto.svg`.
+
+```bash
+ollama pull nomic-embed-text
+python benchmarks/run_hosted_bench.py     # produces the matrix first
+python benchmarks/run_predictive_bench.py
+```
+
 Findings and analysis for all experiments are in
 [`docs/EXPERIMENTS.md`](../../../docs/EXPERIMENTS.md).
 

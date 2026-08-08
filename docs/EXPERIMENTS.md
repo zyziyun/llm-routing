@@ -179,20 +179,21 @@ decisions, since it preserves order, but absolute quality claims need an
 independent judge. A self-hosted eval loop should treat its own scores as a
 lenient upper bound.
 
-## Experiment 4: real edge-to-cloud escalation across providers
+## Experiment 4: real edge-to-cloud escalation across three providers
 
 Experiments 1-3 are all local. This one adds the boundary the whole repo is
 about: local small models that escalate to **real hosted frontiers**.
-`benchmarks/run_hosted_bench.py` runs a four-tier ladder across three providers
-and judges everything with the independent `claude-opus-5` gold judge (so these
-numbers already carry Experiment 3's correction, not the self-judge's leniency).
+`benchmarks/run_hosted_bench.py` runs a five-tier ladder across three cloud
+providers and judges everything with the independent `claude-opus-5` gold judge
+(so these numbers carry Experiment 3's correction, not the self-judge leniency).
 
 | Tier | Model | Provider | Gold quality | Cost / 12 tasks |
 |---|---|---|---|---|
-| edge | `llama3.2:1b` | Ollama (local) | 0.43 | $0.0002 |
-| local-frontier | `qwen2.5-coder:14b` | Ollama (local) | 0.79 | $0.018 |
-| cloud:sonnet | `claude-sonnet-5` | Anthropic | 0.83 | $0.043 |
-| cloud:gpt5 | `gpt-5` | OpenAI | 0.75 | $0.069 |
+| edge | `llama3.2:1b` | Ollama (local) | 0.51 | $0.0002 |
+| local-frontier | `qwen2.5-coder:14b` | Ollama (local) | 0.77 | $0.018 |
+| cloud:deepseek | `deepseek-chat` (open weight) | DeepSeek | **0.90** | **$0.0026** |
+| cloud:sonnet | `claude-sonnet-5` | Anthropic | 0.84 | $0.042 |
+| cloud:gpt5 | `gpt-5` | OpenAI | 0.75 | $0.076 |
 
 Local prices are equivalent-hosted estimates; cloud prices are real published
 rates (input/output priced separately). The judge is never a tier, so there is
@@ -201,49 +202,95 @@ no self-scoring bias.
 ![edge to cloud cost vs quality](../packages/gateway/docs/screenshots/hosted-pareto.svg)
 
 **The gold judge confirms Experiment 1 was optimistic.** Under the independent
-judge the local tiers drop hard: edge from 0.69 to 0.43, local-frontier (the
-same qwen model) from 0.90 to 0.79. Experiment 1's ordering held, but its
-absolute quality was inflated by the self-judge, exactly as Experiment 3
-predicted. Trust the numbers in this table over Experiment 1's.
+judge the local tiers drop: edge from 0.69 to 0.51, local-frontier (the same qwen
+model) from 0.90 to 0.77. Experiment 1's ordering held, but its absolute quality
+was inflated by the self-judge. Trust this table over Experiment 1's.
 
 **The router auto-selects the cloud, and that is the whole point.** Nothing is
 pinned to one cloud model. The router walks a cost-ordered chain and the quality
 gate picks whichever tier first clears the bar; at the cloud step it chooses
-across providers on its own. That is what lets the server-side router run
-autonomously: at threshold 0.9 it kept 8 of 12 tasks on local models and
-escalated only the 4 hardest, and the cloud pick was made by the gate, not by a
-human.
+across providers on its own. At threshold 0.9 it kept 8 of 12 tasks on local
+models and escalated only the 4 hardest, and the gate picked the cloud, not a
+human. It picked `deepseek` every time — see below.
 
-**But escalating through two clouds in series is a cost trap.** The obvious
-autonomous design tries each cloud in turn until one passes. It works on quality
-(0.85) but costs $0.079 — *more* than just calling `claude-sonnet-5` directly
-($0.043, 0.83). Two reasons, both real: a miss on the first cloud still bills it
-before the second runs, and static input-price ordering put `gpt-5` first, which
-on this set was both pricier (reasoning tokens inflate its output bill) and lower
-quality. Speculative escalation pays off among cheap local tiers (Experiment 1);
-among expensive clouds it loses.
+**The open-weight model won on both axes.** `deepseek-chat`, served through a
+cheap OpenAI-compatible API, scored 0.90 — higher than `claude-sonnet-5` (0.84)
+and `gpt-5` (0.75) — at $0.0026, roughly 16x cheaper than sonnet and 29x cheaper
+than gpt-5. `gpt-5` also hit its own trap: on one hard task it spent its entire
+reasoning-token budget and returned empty, scoring 0 at the run's highest
+single-call cost ($0.02). The best-value-cloud selector chose deepseek
+unanimously, which is exactly the provider-agnostic behavior you want.
 
-| Strategy | Quality | Cost / 12 | vs sonnet-only |
+**Cascade still loses to selecting one cloud.** Walking every cloud in series
+double-pays on hard turns; routing to the single best-value cloud is cheaper at
+equal quality:
+
+| Strategy | Quality | Cost / 12 |
+|---|---|---|
+| router-cascade @0.9 (walk every cloud) | 0.88 | $0.049 |
+| router-select @0.9 (route to best-value cloud) | 0.89 | $0.017 |
+
+**But the deeper finding: when the best cloud is cheap, the router barely helps.**
+`cloud-only:deepseek` scores 0.90 at $0.0026 — *cheaper and higher quality* than
+`router-select @0.9` (0.89 at $0.017), because the router still pays the local
+tiers first before escalating. The economic case for a router assumes a large
+cost gap between the cheap and the capable tier. A strong-and-cheap open model
+collapses that gap and erodes the cost argument. The router's remaining value is
+then on the axes this cost benchmark does not show: **privacy** (keep data on
+device), **latency floor**, **offline operation**, and **not knowing in advance
+which provider is best** — which is what the predictive router below addresses.
+
+## Experiment 5: predictive routing (decide from the query, route once)
+
+Every router above is a **cascade**: try a tier, gate, escalate. That is why it
+double-pays. The alternative the field converged on (RouteLLM, aurelio
+semantic-router) is **predictive**: look at the query, predict the tier that will
+clear the bar, and go straight there — one call, no speculation.
+`benchmarks/run_predictive_bench.py` measures it. It reuses Experiment 4's
+gold-judge matrix (no models re-run) and adds only local embeddings. The
+predictor is a cosine k-NN over prompt embeddings (`nomic-embed-text` via Ollama),
+the same nearest-example mechanism as semantic-router. With only 12 tasks,
+accuracy is estimated by leave-one-out cross-validation.
+
+![predictive vs cascade](../packages/gateway/docs/screenshots/predictive-pareto.svg)
+
+| Strategy | Quality | Cost / 12 | Note |
 |---|---|---|---|
-| cloud-only:sonnet | 0.83 | $0.043 | baseline |
-| router-cascade @0.9 (try both clouds) | 0.85 | $0.079 | +84% cost |
-| **router-select @0.9 (select one cloud)** | **0.84** | **$0.037** | **-13% cost** |
-| router-select @0.7 | 0.83 | $0.029 | **-31% cost** |
+| router-cascade @0.7 | 0.86 | $0.017 | walks tiers |
+| router-select @0.7 | 0.86 | $0.013 | routes to one cloud |
+| **oracle (perfect prediction)** | **0.86** | **$0.0018** | route-once ceiling |
+| router-predictive (k-NN, LOOCV) | 0.58 | $0.0008 | 50% accuracy |
 
-**The fix is to select one cloud, not try several.** A router that escalates to a
-single chosen cloud beats always-cloud by 13% at equal-or-better quality, and by
-31% at the same quality as sonnet-only, while still keeping two thirds of traffic
-local. The design rule: the cloud tier should be *routed to* (predict the best
-single provider), not *walked* — and it should be ordered by measured effective
-cost, not static list price, since a reasoning model's token bill is only visible
-after the fact.
+**The predictive ceiling dominates — and the predictor is the whole game.** A
+perfect predictor routes each task once (easy to free edge, hard to cheap
+deepseek) and matches cascade quality (0.86) at **9x less cost** ($0.0018 vs
+$0.017), because it never pays for a tier it does not use. That is the case for
+predictive routing in one number.
+
+But the realized predictor gets there only halfway. The k-NN predictor scored 50%
+routing accuracy and under-routed 4 of 12 hard tasks to the edge model, dragging
+quality to 0.58. The gap from 0.58 to the oracle's 0.86 *is* the predictor-quality
+gap — nothing else. This is precisely why RouteLLM trains its router on 80k
+preference battles rather than a handful of examples: predictive routing shifts
+all the difficulty into the predictor, and a cosine k-NN over 12 prompts is not a
+good enough predictor. The architecture is right; it demands a real, trained
+classifier and real training data to pay off.
 
 ## What this validates
 
-- SLM-first with an escalation gate is not a story, it reproduces on real
-  models: most traffic stays cheap and the expensive tier is spent only where it
-  changes the answer.
-- The confidence threshold is the one dial. Sweeping it traces the cost-quality
-  frontier directly, and 0.6 is the knee for this workload.
-- Capability is not size. The ladder must be validated per workload, which is
-  what this harness is for.
+- SLM-first with an escalation gate reproduces on real models: most traffic
+  stays cheap and the expensive tier is spent only where it changes the answer.
+- The confidence threshold is the one dial; sweeping it traces the cost-quality
+  frontier directly.
+- Capability is not size. The ladder must be validated per workload, and the
+  judge must be independent — a self-hosted judge reports a lenient upper bound
+  (Experiment 3), and it re-ranked the whole ladder once corrected (Experiment 4).
+- The router is provider-agnostic and self-selecting: given several clouds it
+  picks the best-value one through the gate, no human and no hardcoding.
+- A router's cost win is conditional, not automatic. Cascade double-pays; select
+  one cloud instead. And when a strong open model is also cheap (deepseek here),
+  the cheap/capable cost gap collapses and the router's cost case with it — its
+  value moves to privacy, latency, and offline operation.
+- Predictive routing beats cascade in principle (the oracle route-once ceiling is
+  9x cheaper at equal quality) but only as far as the predictor is good; a naive
+  k-NN realizes half of it. The predictor, and its training data, is the work.
