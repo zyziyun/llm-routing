@@ -35,7 +35,7 @@ tradeoffs.
 
 ## Experiments (real models, no mock)
 
-Six experiments on real inference — local models via Ollama, hosted APIs
+Seven experiments on real inference — local models via Ollama, hosted APIs
 (Anthropic, OpenAI, DeepSeek), and a self-hosted 72B on a rented A100 — each
 scored by an independent `claude-opus-5` judge. Full writeups and charts in
 [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md); the honest headline of each:
@@ -46,6 +46,7 @@ scored by an independent `claude-opus-5` judge. Full writeups and charts in
 4. **Edge → cloud, 3 providers** — the router auto-selects the cloud by measured value, and an open model (DeepSeek) beat both proprietary frontiers on quality *and* cost.
 5. **Predictive routing** — deciding from the query alone (route once) has a 9x-cheaper ceiling than cascade, but a naive predictor realizes only half of it; the predictor is the work.
 6. **Serving a 72B** — vLLM continuous batching gives 12.1x throughput (vs 1.1x on Ollama), yet self-hosting still loses to a cheap hosted API until near-saturation.
+7. **A real predictor** — a trained "can the cheap tier handle this?" classifier hits 69-77% (vs the naive 50%); its route-once ceiling beats cascade, but closing the gap is a predictor problem, not an architecture one.
 
 One theme runs through them: a router, or a self-hosted GPU, is not automatically
 cheaper. Strong-and-cheap hosted open models keep eroding the case, and the

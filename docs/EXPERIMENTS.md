@@ -316,6 +316,55 @@ throughput would keep rising with more memory or a second GPU, pushing break-eve
 lower. The direction of the conclusion is robust; the exact crossover is
 workload- and hardware-specific, which is exactly why the harness is parameterized.
 
+## Experiment 7: a real predictor, and the confidence dial
+
+Experiment 5 said predictive routing's ceiling dominates cascade but a naive
+k-NN over 12 tasks realized only half of it. This does it properly.
+`benchmarks/run_predictor.py` takes 48 varied prompts, labels each by whether the
+edge tier (`llama3.2:1b`) clears the gold judge (`edge_ok`), and trains a real
+classifier over prompt embeddings to predict `edge_ok` from the query alone — the
+RouteLLM idea in miniature: predict whether the cheap tier wins, route once.
+Evaluated out-of-fold, with a **confidence-abstain** knob: keep a query on edge
+only if the predictor is at least `threshold` sure, else escalate.
+
+![predictive routing: trained LR vs cascade / kNN / oracle](../packages/gateway/docs/screenshots/predictor-pareto.svg)
+
+A methodology note worth keeping: the first run scored the predictor *below
+chance* (10%). The task set is ordered easy→hard, and unshuffled k-fold put an
+entire class in the test fold that the model never trained on. Shuffling the
+folds and reducing 768-dim embeddings to 16 via PCA (more features than samples
+otherwise) fixed it.
+
+**A trained predictor is much better than the naive one — but still not enough to
+beat cascade here.** Out-of-fold accuracy: **LR 69%, k-NN 77%**, against a 54%
+majority baseline and Experiment 5's ~50% — a real jump. The confidence dial
+traces a genuine cost-quality curve:
+
+| Strategy | Quality | Cost / 48 | routed to edge |
+|---|---|---|---|
+| edge-only | 0.62 | $0.0009 | 48 |
+| cloud-only (deepseek) | 0.91 | $0.0084 | 0 |
+| cascade (pays edge, then escalates) | 0.91 | $0.0072 | 26 |
+| **oracle (route-once, perfect)** | **0.91** | **$0.0067** | 26 |
+| predictive-LR @0.5 | 0.75 | $0.0052 | 33 |
+| predictive-LR @0.6 | 0.83 | $0.0071 | 15 |
+
+Two honest reads. First, the **oracle still dominates cascade** — 0.91 quality at
+$0.0067 vs $0.0072 — because route-once never double-pays; the ceiling from
+Experiment 5 holds on real data. Second, the **realized predictor does not reach
+it**: at 69-77% accuracy, every misrouted hard query sent to edge costs quality
+that cascade's *live* gate never loses (cascade runs the cheap tier, checks it,
+and escalates only on an actual miss). Predictive trades that quality for cost
+along the curve; it dominates cascade only where the tier cost gap is large enough
+that avoiding the double-pay outweighs the misroute risk.
+
+Here the gap is small — edge is ~free and the escalation target is cheap deepseek,
+so cascade's double-pay is only ~8%, and its quality safety-net is worth it. That
+is the same lesson as Experiments 4-6 once more: cheap, strong tiers shrink the
+gap that makes clever routing pay. Predictive routing is the right architecture,
+its ceiling wins, and closing the gap to that ceiling is a predictor problem —
+which is exactly why RouteLLM trains on 80k battles, not 48 prompts.
+
 ## What this validates
 
 - SLM-first with an escalation gate reproduces on real models: most traffic
