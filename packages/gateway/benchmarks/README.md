@@ -30,7 +30,20 @@ measures validity and tokens for each. It writes `results_constrained.json` and
 python run_constrained_bench.py
 ```
 
-Findings and analysis for both experiments are in
+## Judge A/B (independent judge)
+
+`run_judge_ab.py` re-scores the judged tasks with an independent gold judge
+(`claude-opus-5`) alongside the local qwen judge, exposing how much a
+self-hosted judge inflates its own scores. Needs `ANTHROPIC_API_KEY` in a
+gitignored `.env` here. Writes `results_judge_ab.json` and
+`../docs/screenshots/judge-ab.svg`.
+
+```bash
+echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
+python run_judge_ab.py
+```
+
+Findings and analysis for all experiments are in
 [`docs/EXPERIMENTS.md`](../../../docs/EXPERIMENTS.md).
 
 `tasks.jsonl` is the task set: easy / medium / hard prompts graded by the judge,

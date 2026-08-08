@@ -134,6 +134,46 @@ with nested objects, enums, and arrays, and with weaker instruction following. O
 flat two-field extractions a good prompt is enough for validity, and the win is
 the 11x token collapse.
 
+## Experiment 3: is the judge biased toward its own tier?
+
+Experiment 1 used `qwen2.5-coder:14b` as both the frontier tier and the judge. A
+model scoring its own outputs is a known bias, so it needs checking rather than
+assuming. `benchmarks/run_judge_ab.py` re-scores the same answers with an
+independent gold judge, `claude-opus-5`, and compares the two judges tier by
+tier. Requires an `ANTHROPIC_API_KEY` in `packages/gateway/.env`.
+
+![local self-judge vs independent Claude](../packages/gateway/docs/screenshots/judge-ab.svg)
+
+| Tier | qwen (self-judge) | Opus 5 (independent) | inflation |
+|---|---|---|---|
+| edge (1b) | 0.87 | 0.58 | +0.29 |
+| mid (2b) | 0.35 | 0.34 | +0.01 |
+| frontier (14b) | 0.96 | 0.85 | +0.11 |
+
+Overall the local judge scores **0.14 higher** than the independent one, and the
+two judges correlate at **r = 0.86**.
+
+**The ordering holds; the absolute numbers were optimistic.** An r of 0.86 means
+the two judges rank answers the same way, so Experiment 1's *shape* stands: the
+tier ladder and the router's cost-quality frontier don't move. What moves is the
+level. Every tier's quality in Experiment 1 was inflated by a lenient judge.
+
+**Self-preference is real but not the main bias.** The naive worry is that qwen
+flatters its own frontier outputs, and it does, by +0.11. But that is the
+*second* largest distortion. The largest is leniency toward the **weakest** tier:
+qwen overrates the 1B edge model by +0.29, most of it on the hard tasks, where it
+scored a garbled irrationality proof 0.90 that the gold judge scored 0.05. The
+mid tier shows almost no gap because it mostly failed outright and both judges
+agree on a failure. So the honest correction is not "discount the frontier" but
+"the cheap tier is worse than a self-hosted judge reports," which **widens** the
+real edge-to-frontier gap (0.58 vs 0.85) and makes the case for escalating hard
+turns stronger, not weaker.
+
+The methodological takeaway: a local judge is fine for *relative* routing
+decisions, since it preserves order, but absolute quality claims need an
+independent judge. A self-hosted eval loop should treat its own scores as a
+lenient upper bound.
+
 ## What this validates
 
 - SLM-first with an escalation gate is not a story, it reproduces on real
