@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380" font-family="ui-monospace, Menlo, monospace"><rect width="560" height="380" fill="#0f1115"/>
+<text x="280" y="24" fill="#e6e9ef" font-size="14" text-anchor="middle">predictive vs cascade routing (judged by claude-opus-5)</text>
+<line x1="60" y1="320" x2="500" y2="320" stroke="#9aa4b2"/>
+<line x1="60" y1="60" x2="60" y2="320" stroke="#9aa4b2"/>
+<text x="280" y="366" fill="#9aa4b2" font-size="11" text-anchor="middle">cost $/12 tasks</text>
+<text x="16" y="190" fill="#9aa4b2" font-size="11" transform="rotate(-90 16 190)" text-anchor="middle">gold-judge quality</text>
+<circle cx="60" cy="262" r="5" fill="#3ddc97"/>
+<text x="68" y="265" fill="#e6e9ef" font-size="10" text-anchor="start">edge-only</text>
+<circle cx="125" cy="60" r="5" fill="#c084fc"/>
+<text x="133" y="63" fill="#e6e9ef" font-size="10" text-anchor="start">cloud-only:deepseek</text>
+<circle cx="500" cy="82" r="5" fill="#e05c6e"/>
+<text x="492" y="85" fill="#e6e9ef" font-size="10" text-anchor="end">router-cascade@0.7</text>
+<circle cx="401" cy="82" r="5" fill="#f7a23b"/>
+<text x="409" y="85" fill="#e6e9ef" font-size="10" text-anchor="start">router-select@0.7</text>
+<circle cx="77" cy="227" r="5" fill="#5b8cff"/>
+<text x="85" y="230" fill="#e6e9ef" font-size="10" text-anchor="start">router-predictive</text>
+<circle cx="104" cy="82" r="5" fill="#e6e9ef"/>
+<text x="112" y="85" fill="#e6e9ef" font-size="10" text-anchor="start">oracle (upper bound)</text>
+</svg>

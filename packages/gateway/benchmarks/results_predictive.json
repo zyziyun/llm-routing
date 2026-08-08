@@ -1,0 +1,106 @@
+{
+  "judge": "claude-opus-5",
+  "tau": 0.7,
+  "embed_model": "nomic-embed-text",
+  "escalation_order": [
+    "edge",
+    "cloud:deepseek",
+    "local-frontier",
+    "cloud:sonnet",
+    "cloud:gpt5"
+  ],
+  "labels": {
+    "e1": "edge",
+    "e2": "cloud:deepseek",
+    "e3": "edge",
+    "e4": "edge",
+    "m1": "edge",
+    "m2": "edge",
+    "m3": "edge",
+    "h1": "cloud:deepseek",
+    "h2": "cloud:deepseek",
+    "h3": "cloud:deepseek",
+    "s1": "cloud:deepseek",
+    "s2": "edge"
+  },
+  "predictions": {
+    "e1": "edge",
+    "e2": "edge",
+    "e3": "edge",
+    "e4": "edge",
+    "m1": "edge",
+    "m2": "edge",
+    "m3": "cloud:deepseek",
+    "h1": "edge",
+    "h2": "edge",
+    "h3": "cloud:deepseek",
+    "s1": "edge",
+    "s2": "cloud:deepseek"
+  },
+  "predictive": {
+    "quality": 0.578,
+    "cost": 0.000816,
+    "latency_ms": 1822.6,
+    "accuracy": 0.5,
+    "under": 4,
+    "over": 2
+  },
+  "oracle": {
+    "quality": 0.857,
+    "cost": 0.00182,
+    "latency_ms": 1955.0,
+    "accuracy": 1.0,
+    "under": 0,
+    "over": 0
+  },
+  "comparison": {
+    "edge-only": {
+      "quality": 0.512,
+      "cost": 0.000184,
+      "latency_ms": 1650.4
+    },
+    "cloud-only:deepseek": {
+      "quality": 0.9,
+      "cost": 0.00264,
+      "latency_ms": 2275.5
+    },
+    "router-cascade@0.7": {
+      "quality": 0.857,
+      "cost": 0.016731,
+      "latency_ms": 8997.0,
+      "mix": {
+        "edge": 6,
+        "local-frontier": 2,
+        "cloud:deepseek": 3,
+        "cloud:gpt5": 0,
+        "cloud:sonnet": 1
+      }
+    },
+    "router-select@0.7": {
+      "quality": 0.857,
+      "cost": 0.013016,
+      "latency_ms": 8427.1,
+      "mix": {
+        "edge": 6,
+        "local-frontier": 2,
+        "cloud:deepseek": 4
+      }
+    },
+    "router-predictive": {
+      "quality": 0.578,
+      "cost": 0.000816,
+      "latency_ms": 1822.6,
+      "accuracy": 0.5,
+      "under": 4,
+      "over": 2
+    },
+    "oracle (upper bound)": {
+      "quality": 0.857,
+      "cost": 0.00182,
+      "latency_ms": 1955.0,
+      "accuracy": 1.0,
+      "under": 0,
+      "over": 0
+    }
+  }
+}
