@@ -56,8 +56,11 @@ export function mountApp(router: EdgeRouter, statusText: string) {
       ? `<span class="pill local">0 bytes left device</span>`
       : `<span class="pill cloud">${r.bytesToCloud} bytes → cloud</span>`;
     const why = r.escalated ? `<span class="pill cloud">why: ${r.escalationReasons.join(", ")}</span>` : "";
+    const pii = r.redactedEntities.length
+      ? `<span class="pill local">redacted on device: ${r.redactedEntities.map((e) => `${e.count} ${e.type}`).join(", ")}</span>`
+      : "";
     ($("trail") as HTMLElement).innerHTML =
-      `<span class="pill">difficulty: ${r.difficulty}</span>${trail}${priv}${why}`;
+      `<span class="pill">difficulty: ${r.difficulty}</span>${trail}${priv}${pii}${why}`;
     ($("out") as HTMLElement).textContent = r.final.text;
   }
 
@@ -66,6 +69,7 @@ export function mountApp(router: EdgeRouter, statusText: string) {
     ($("metrics") as HTMLElement).innerHTML =
       stat(`${Math.round(localShare(m) * 100)}%`, `answered on device (${m.keptLocal}/${m.total})`) +
       stat(`${m.bytesToCloud}`, "bytes that left the device") +
+      stat(`${m.piiRedacted}`, "PII entities kept on device") +
       stat(`${Math.round(costSavedPct(m))}%`, "cost saved vs cloud-only") +
       stat(`$${m.costUsd.toFixed(4)}`, "actual cloud spend");
   }

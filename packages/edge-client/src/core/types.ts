@@ -1,6 +1,8 @@
 // Core types. Erasable-only TypeScript (no enums / namespaces) so the pure
 // core runs under `node --test` type-stripping AND bundles under Vite.
 
+import type { RedactionEntity } from "./redact.ts";
+
 export type Tier = "local" | "cloud";
 
 export type Difficulty = "easy" | "medium" | "hard";
@@ -62,4 +64,5 @@ export interface RouteResult {
   costUsd: number;
   latencyMs: number;
   bytesToCloud: number;        // privacy: bytes that left the device (0 if kept local)
+  redactedEntities: RedactionEntity[]; // PII stripped on device before escalation
 }

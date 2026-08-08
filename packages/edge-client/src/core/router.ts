@@ -11,6 +11,8 @@
 import type { Engine } from "../engines/types.ts";
 import { classify } from "./classifier.ts";
 import { assessLocal, DEFAULT_GATE, estimateTokens, type GateConfig } from "./gate.ts";
+import { redact } from "./redact.ts";
+import type { RedactionEntity } from "./redact.ts";
 import type {
   Attempt,
   EscalationReason,
@@ -23,11 +25,14 @@ export interface RouterConfig {
   // Skip the local attempt entirely when the classifier says "hard": it wastes
   // on-device compute and battery to run a model that will just be escalated.
   skipLocalOnHard: boolean;
+  // Strip PII on device before a request is allowed to escalate to the cloud.
+  redactBeforeEscalation: boolean;
 }
 
 export const DEFAULT_ROUTER: RouterConfig = {
   gate: DEFAULT_GATE,
   skipLocalOnHard: true,
+  redactBeforeEscalation: true,
 };
 
 export class EdgeRouter {
@@ -62,7 +67,7 @@ export class EdgeRouter {
         cost += reply.costUsd;
         latency += reply.latencyMs;
         if (verdict.acceptable) {
-          return this.result(req, difficulty, attempts, [], cost, latency, 0);
+          return this.result(req, difficulty, attempts, [], cost, latency, 0, []);
         }
         escalationReasons.push(...verdict.reasons);
       } catch {
@@ -75,16 +80,27 @@ export class EdgeRouter {
     }
 
     // ---- cloud escalation ----
-    const cloudReply = await this.cloud.complete(req);
-    const cloudVerdict = assessLocal(req, cloudReply, this.cfg.gate);
+    // Redact PII on device first: the cloud only ever sees the stripped prompt.
+    let cloudReq = req;
+    let redactedEntities: RedactionEntity[] = [];
+    if (this.cfg.redactBeforeEscalation) {
+      const r = redact(req.prompt);
+      if (r.entities.length) {
+        cloudReq = { ...req, prompt: r.redacted };
+        redactedEntities = r.entities;
+      }
+    }
+
+    const cloudReply = await this.cloud.complete(cloudReq);
+    const cloudVerdict = assessLocal(cloudReq, cloudReply, this.cfg.gate);
     attempts.push({ tier: "cloud", reply: cloudReply, verdict: cloudVerdict });
     cost += cloudReply.costUsd;
     latency += cloudReply.latencyMs;
 
-    // Privacy accounting: the prompt (and only escalated prompts) left the box.
-    const bytesToCloud = new TextEncoder().encode(req.prompt).length;
+    // Privacy accounting: only the escalated, redacted prompt left the box.
+    const bytesToCloud = new TextEncoder().encode(cloudReq.prompt).length;
 
-    return this.result(req, difficulty, attempts, escalationReasons, cost, latency, bytesToCloud);
+    return this.result(req, difficulty, attempts, escalationReasons, cost, latency, bytesToCloud, redactedEntities);
   }
 
   private result(
@@ -95,6 +111,7 @@ export class EdgeRouter {
     cost: number,
     latency: number,
     bytesToCloud: number,
+    redactedEntities: RedactionEntity[],
   ): RouteResult {
     const final = attempts[attempts.length - 1].reply;
     const keptLocal = final.tier === "local";
@@ -109,6 +126,7 @@ export class EdgeRouter {
       costUsd: Number(cost.toFixed(6)),
       latencyMs: Number(latency.toFixed(1)),
       bytesToCloud,
+      redactedEntities,
     };
   }
 }

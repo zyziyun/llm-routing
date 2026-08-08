@@ -6,11 +6,17 @@ leave the machine; only hard or low-confidence turns escalate to the cloud
 gateway (`packages/gateway`).
 
 ```
-prompt ─▶ classify (on device) ─▶ hard? ─▶ cloud gateway
+prompt ─▶ classify (on device) ─▶ hard? ─▶ redact PII ─▶ cloud gateway
                                  └ else ─▶ local model ─▶ quality gate
                                                           ├ ok  ─▶ keep (0 bytes leave device)
-                                                          └ bad ─▶ escalate to cloud gateway
+                                                          └ bad ─▶ redact PII ─▶ cloud gateway
 ```
+
+Privacy-preserving escalation: before any turn leaves the device it passes
+through an on-device PII redactor (`src/core/redact.ts`, a JS-native, in-browser
+counterpart to Microsoft Presidio), so emails, phones, SSNs, cards, and API keys
+never reach the cloud even when the request does. The session panel counts PII
+entities kept on device.
 
 ## Run it
 

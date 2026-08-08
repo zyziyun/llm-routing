@@ -11,13 +11,15 @@ export interface SessionMetrics {
   bytesToCloud: number;      // total bytes that left the device this session
   costUsd: number;           // actual spend (escalated turns only)
   cloudOnlyCostUsd: number;  // counterfactual: if every turn had gone to cloud
+  piiRedacted: number;       // PII entities stripped on device before escalation
 }
 
 export function emptyMetrics(): SessionMetrics {
-  return { total: 0, keptLocal: 0, escalated: 0, bytesToCloud: 0, costUsd: 0, cloudOnlyCostUsd: 0 };
+  return { total: 0, keptLocal: 0, escalated: 0, bytesToCloud: 0, costUsd: 0, cloudOnlyCostUsd: 0, piiRedacted: 0 };
 }
 
 export function accumulate(m: SessionMetrics, r: RouteResult, cloudUnitCostUsd: number): SessionMetrics {
+  const pii = r.redactedEntities.reduce((a, e) => a + e.count, 0);
   return {
     total: m.total + 1,
     keptLocal: m.keptLocal + (r.keptLocal ? 1 : 0),
@@ -26,6 +28,7 @@ export function accumulate(m: SessionMetrics, r: RouteResult, cloudUnitCostUsd: 
     costUsd: Number((m.costUsd + r.costUsd).toFixed(6)),
     // Counterfactual: charge every request the cloud unit cost.
     cloudOnlyCostUsd: Number((m.cloudOnlyCostUsd + cloudUnitCostUsd).toFixed(6)),
+    piiRedacted: m.piiRedacted + pii,
   };
 }
 
