@@ -167,7 +167,7 @@ What the gateway adds over the router core:
 | State | in-memory | Redis (cache, breaker, rate-limit, budget) with in-memory fallback |
 | Reliability | quality fallback only | per-provider circuit breaker + per-attempt timeouts |
 | Cost governance | none | per-API-key rate limits and daily budget caps |
-| Observability | none | Prometheus `/metrics`, structured JSON logs with request_id |
+| Observability | none | Prometheus `/metrics`, structured JSON logs with request_id, OpenTelemetry tracing (`GW_OTEL_ENABLED=1`) with GenAI-style span attributes |
 | Ops | none | `/healthz`, `/readyz`, graceful lifespan, Docker + k8s + CI |
 
 Two escalation causes are kept distinct: the **circuit breaker** skips a

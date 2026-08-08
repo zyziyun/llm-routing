@@ -34,6 +34,7 @@ from .metrics import BUDGET_BLOCKED, INFLIGHT, RATE_LIMITED
 from .router import AsyncRouter
 from .settings import settings
 from .store import build_store
+from .tracing import setup_tracing
 
 logger = logging.getLogger("gateway.app")
 
@@ -41,6 +42,7 @@ logger = logging.getLogger("gateway.app")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     setup_logging(settings.log_level)
+    setup_tracing()
     app.state.store = build_store()
     app.state.router = AsyncRouter(app.state.store)
     app.state.rl = RateLimiter(app.state.store)

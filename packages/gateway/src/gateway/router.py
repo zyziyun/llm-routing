@@ -31,6 +31,7 @@ from .metrics import CACHE_HITS, COST, ESCALATIONS, LATENCY, REQUESTS
 from .providers.registry import build_async_registry
 from .settings import settings
 from .store import Store
+from .tracing import start_span
 
 logger = logging.getLogger("gateway.router")
 
@@ -72,51 +73,63 @@ class AsyncRouter:
                                difficulty=Difficulty.EASY, cache_hit=True,
                                total_cost_usd=0.0, total_latency_ms=1.0)
 
-        difficulty = self.classifier.classify(request)
-        request.metadata["difficulty"] = difficulty.value
-        start_idx = LADDER.index(_START[difficulty])
+        with start_span("gateway.route") as span:
+            difficulty = self.classifier.classify(request)
+            request.metadata["difficulty"] = difficulty.value
+            span.set_attribute("gen_ai.request.difficulty", difficulty.value)
+            start_idx = LADDER.index(_START[difficulty])
 
-        attempts: list[Attempt] = []
-        total_cost = total_latency = 0.0
-        final: ProviderReply | None = None
+            attempts: list[Attempt] = []
+            total_cost = total_latency = 0.0
+            final: ProviderReply | None = None
 
-        for tier in LADDER[start_idx:]:
-            breaker = self.breakers[tier]
-            if not await breaker.allow():
-                log(logger, logging.WARNING, "breaker_open_skip", tier=tier.value)
-                continue  # reliability escalation
-            try:
-                reply = await asyncio.wait_for(
-                    self.providers[tier].complete(request),
-                    timeout=settings.per_attempt_timeout_s,
-                )
-                await breaker.on_success()
-            except (asyncio.TimeoutError, Exception) as e:  # noqa: BLE001
-                await breaker.on_failure()
-                log(logger, logging.ERROR, "provider_failed", tier=tier.value, error=str(e))
-                continue  # reliability escalation to next tier
+            for tier in LADDER[start_idx:]:
+                breaker = self.breakers[tier]
+                if not await breaker.allow():
+                    log(logger, logging.WARNING, "breaker_open_skip", tier=tier.value)
+                    continue  # reliability escalation
+                with start_span(f"gateway.attempt.{tier.value}") as aspan:
+                    aspan.set_attribute("gen_ai.request.tier", tier.value)
+                    try:
+                        reply = await asyncio.wait_for(
+                            self.providers[tier].complete(request),
+                            timeout=settings.per_attempt_timeout_s,
+                        )
+                        await breaker.on_success()
+                    except (asyncio.TimeoutError, Exception) as e:  # noqa: BLE001
+                        await breaker.on_failure()
+                        aspan.set_attribute("error", True)
+                        log(logger, logging.ERROR, "provider_failed", tier=tier.value, error=str(e))
+                        continue  # reliability escalation to next tier
 
-            verdict = self.gate.assess(request, reply)
-            attempts.append(Attempt(tier=tier, reply=reply, verdict=verdict))
-            total_cost += reply.cost_usd
-            total_latency += reply.latency_ms
-            LATENCY.labels(tier=tier.value).observe(reply.latency_ms / 1000.0)
-            COST.labels(tier=tier.value).inc(reply.cost_usd)
-            final = reply
-            if verdict.acceptable:
-                await self._cache_put(request.prompt, reply)
-                REQUESTS.labels(tier=tier.value, outcome="accepted").inc()
-                break
-            REQUESTS.labels(tier=tier.value, outcome="escalated").inc()
+                    verdict = self.gate.assess(request, reply)
+                    aspan.set_attribute("gen_ai.response.confidence", reply.confidence)
+                    aspan.set_attribute("gen_ai.usage.cost_usd", reply.cost_usd)
+                    aspan.set_attribute("gateway.accepted", verdict.acceptable)
+                attempts.append(Attempt(tier=tier, reply=reply, verdict=verdict))
+                total_cost += reply.cost_usd
+                total_latency += reply.latency_ms
+                LATENCY.labels(tier=tier.value).observe(reply.latency_ms / 1000.0)
+                COST.labels(tier=tier.value).inc(reply.cost_usd)
+                final = reply
+                if verdict.acceptable:
+                    await self._cache_put(request.prompt, reply)
+                    REQUESTS.labels(tier=tier.value, outcome="accepted").inc()
+                    break
+                REQUESTS.labels(tier=tier.value, outcome="escalated").inc()
 
-        if final is None:
-            # Every tier was open or failed. Surface a clear error upstream.
-            raise RuntimeError("all providers unavailable")
+            if final is None:
+                # Every tier was open or failed. Surface a clear error upstream.
+                raise RuntimeError("all providers unavailable")
 
-        if len(attempts) > 1:
-            ESCALATIONS.inc()
+            escalated = len(attempts) > 1
+            if escalated:
+                ESCALATIONS.inc()
+            span.set_attribute("gen_ai.response.tier", final.tier.value)
+            span.set_attribute("gateway.escalated", escalated)
+            span.set_attribute("gen_ai.usage.cost_usd", round(total_cost, 6))
 
-        return RouteResult(request=request, final=final, attempts=attempts,
-                           difficulty=difficulty, cache_hit=False,
-                           total_cost_usd=round(total_cost, 6),
-                           total_latency_ms=round(total_latency, 1))
+            return RouteResult(request=request, final=final, attempts=attempts,
+                               difficulty=difficulty, cache_hit=False,
+                               total_cost_usd=round(total_cost, 6),
+                               total_latency_ms=round(total_latency, 1))
