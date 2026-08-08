@@ -34,7 +34,10 @@ BASE = os.environ.get("SERVE_BASE_URL", "http://localhost:8000/v1").rstrip("/")
 MODEL = os.environ.get("SERVE_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 API_KEY = os.environ.get("SERVE_API_KEY", "not-needed")
 GPU_HOURLY = float(os.environ.get("GPU_HOURLY", "0.34"))  # $/hr of the GPU you're serving on
-CONCURRENCY = [int(c) for c in os.environ.get("CONCURRENCY", "1,2,4,8,16").split(",")]
+# A hosted API's output price ($/1M tok) to break even against. Default is a
+# DeepSeek-ish output rate; set to whatever tier you'd otherwise call.
+HOSTED_PRICE = float(os.environ.get("HOSTED_PRICE_PER_1M", "1.10"))
+CONCURRENCY = [int(c) for c in os.environ.get("CONCURRENCY", "1,2,4,8,16,32").split(",")]
 REQS_PER_LEVEL = int(os.environ.get("REQS_PER_LEVEL", "24"))
 MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "128"))
 PROMPT = ("Write a clear, self-contained paragraph explaining how a CPU cache "
@@ -114,9 +117,16 @@ def main() -> None:
     for r in rows:
         r["batching_gain"] = round(r["tok_per_s"] / base_tok, 2)
 
+    # Break-even vs a hosted API: the first concurrency where self-hosted
+    # $/1M output drops below the hosted price. This is the real serving
+    # question -- self-hosting a big model only wins above some utilization.
+    beat = next((r for r in rows if r["cost_per_1m_out"] <= HOSTED_PRICE), None)
+
     results = {"model": MODEL, "base_url": BASE, "gpu_hourly": GPU_HOURLY,
-               "max_tokens": MAX_TOKENS, "reqs_per_level": REQS_PER_LEVEL,
-               "single_latency_ms": warm_ms, "ttft_ms": first_token, "levels": rows}
+               "hosted_price_per_1m": HOSTED_PRICE, "max_tokens": MAX_TOKENS,
+               "reqs_per_level": REQS_PER_LEVEL, "single_latency_ms": warm_ms,
+               "ttft_ms": first_token, "levels": rows,
+               "break_even_concurrency": beat["concurrency"] if beat else None}
     (HERE / "results_serving.json").write_text(json.dumps(results, indent=2))
     _chart(rows)
 
@@ -127,6 +137,12 @@ def main() -> None:
     best = rows[-1]
     print(f"\n  continuous batching gain at c={best['concurrency']}: {best['batching_gain']:.1f}x "
           f"throughput, ${best['cost_per_1m_out']:.4f}/1M output tokens")
+    if beat:
+        print(f"  self-hosting beats the hosted API (${HOSTED_PRICE}/1M) at concurrency "
+              f">= {beat['concurrency']} ({beat['tok_per_s']:.0f} tok/s -> ${beat['cost_per_1m_out']:.4f}/1M)")
+    else:
+        print(f"  self-hosting never beats the hosted API (${HOSTED_PRICE}/1M) up to c={best['concurrency']} "
+              f"-- calling the API is cheaper at this traffic")
     print("  wrote serving/results_serving.json + chart")
 
 
@@ -161,6 +177,10 @@ def _chart(rows) -> None:
         svg.append(f'<text x="{x:.0f}" y="{syt(r["tok_per_s"])-8:.0f}" fill="{FG}" font-size="9" text-anchor="middle">{r["tok_per_s"]:.0f}</text>')
         svg.append(f'<circle cx="{x:.0f}" cy="{syc(r["cost_per_1m_out"]):.0f}" r="4" fill="{BLUE}"/>')
         svg.append(f'<text x="{x:.0f}" y="{H-pad+16:.0f}" fill="{MUTED}" font-size="10" text-anchor="middle">{r["concurrency"]}</text>')
+    # hosted-API break-even line (dashed) on the cost axis
+    hy = max(pad, min(H - pad, syc(HOSTED_PRICE)))
+    svg.append(f'<line x1="{pad}" y1="{hy:.0f}" x2="{W-pad}" y2="{hy:.0f}" stroke="{BLUE}" stroke-width="1" stroke-dasharray="5 4" opacity="0.7"/>')
+    svg.append(f'<text x="{W-pad}" y="{hy-5:.0f}" fill="{BLUE}" font-size="9" text-anchor="end">hosted API ${HOSTED_PRICE}/1M (break-even)</text>')
     svg.append("</svg>")
     (SHOTS / "serving-throughput.svg").write_text("\n".join(svg))
 
