@@ -1,0 +1,48 @@
+{"prompt": "What is the capital of Japan? Answer in one word."}
+{"prompt": "What is the capital of Canada? One word."}
+{"prompt": "Translate 'thank you' into French. Give only the translation."}
+{"prompt": "Translate 'good night' into German. Only the translation."}
+{"prompt": "Convert 10 kilometers to miles. Give the number."}
+{"prompt": "Convert 32 Fahrenheit to Celsius. Give the number."}
+{"prompt": "What is 15% of 200? Give the number."}
+{"prompt": "Name the largest ocean on Earth."}
+{"prompt": "What color do you get mixing blue and yellow? One word."}
+{"prompt": "How many days are in a leap year? Give the number."}
+{"prompt": "What is the chemical symbol for gold?"}
+{"prompt": "Who wrote 'Romeo and Juliet'? Name only."}
+{"prompt": "What is the square root of 144? Give the number."}
+{"prompt": "Spell the word 'necessary'."}
+{"prompt": "What planet is known as the Red Planet?"}
+{"prompt": "Give the past tense of the verb 'to run'."}
+{"prompt": "Explain what an API is, in two sentences."}
+{"prompt": "Explain the difference between RAM and disk storage, in two sentences."}
+{"prompt": "Write a Python function that returns the factorial of n."}
+{"prompt": "Write a Python function that checks if a string is a palindrome."}
+{"prompt": "Summarize what version control (git) is for, in two sentences."}
+{"prompt": "Explain what a hash table is and why lookups are fast, in two sentences."}
+{"prompt": "Write a SQL query to select all users older than 30 from a table named users."}
+{"prompt": "Explain the difference between HTTP and HTTPS, in two sentences."}
+{"prompt": "Write a Python one-liner that flattens a list of lists."}
+{"prompt": "Explain what caching is and when it helps, in two sentences."}
+{"prompt": "Describe what a REST endpoint is, in two sentences."}
+{"prompt": "Write a Python function to count word frequencies in a string."}
+{"prompt": "Explain the difference between a stack and a queue, in two sentences."}
+{"prompt": "Summarize what a load balancer does, in two sentences."}
+{"prompt": "Write a regex that matches a US phone number."}
+{"prompt": "Explain what an index does in a database, in two sentences."}
+{"prompt": "Prove that there are infinitely many prime numbers, step by step."}
+{"prompt": "Design a URL shortener and reason about the collision and scaling trade-offs."}
+{"prompt": "Derive the time complexity of merge sort and explain the recurrence."}
+{"prompt": "Explain the CAP theorem and give a concrete example of each trade-off."}
+{"prompt": "Design a rate limiter for a distributed API and discuss consistency across regions."}
+{"prompt": "Prove that the sum of the first n odd numbers equals n squared, by induction."}
+{"prompt": "Explain how TCP congestion control works and why it matters, in detail."}
+{"prompt": "Design a news feed ranking system and reason about freshness vs relevance."}
+{"prompt": "Derive Bayes' theorem from conditional probability and give an applied example."}
+{"prompt": "Explain how a B-tree keeps operations logarithmic and why databases use it."}
+{"prompt": "Design an idempotent payment API and reason about retries and exactly-once semantics."}
+{"prompt": "Prove that the halting problem is undecidable, sketching the diagonalization argument."}
+{"prompt": "Explain how consistent hashing works and why it helps with node churn."}
+{"prompt": "Design a distributed lock and reason about failure modes and fencing tokens."}
+{"prompt": "Derive the average-case complexity of quicksort and explain the recurrence."}
+{"prompt": "Explain how public-key cryptography enables secure key exchange, step by step."}
