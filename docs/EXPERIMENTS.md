@@ -276,6 +276,46 @@ all the difficulty into the predictor, and a cosine k-NN over 12 prompts is not 
 good enough predictor. The architecture is right; it demands a real, trained
 classifier and real training data to pay off.
 
+## Experiment 6: self-hosting a 72B — the serving economics
+
+Every experiment so far *calls* models. This one *serves* one, to measure what a
+hosted API hides: continuous-batching throughput and true cost-per-token. It runs
+`Qwen2.5-72B-Instruct-AWQ` (a frontier-class open model, too big for the laptop)
+on a rented **A100 80GB at $1.19/hr** via vLLM, and hits it with
+`serving/bench_serving.py` across a concurrency sweep. The GPU $/hr is real; the
+break-even target is DeepSeek's ~$1.10 / 1M output tokens.
+
+![vLLM serving throughput and cost](../packages/gateway/docs/screenshots/serving-throughput.svg)
+
+| Concurrency | tokens/s | batching gain | $/1M output |
+|---|---|---|---|
+| 1 | 18 | 1.0x | $18.34 |
+| 4 | 65 | 3.6x | $5.07 |
+| 8 | 121 | 6.7x | $2.72 |
+| 16 | 172 | 9.5x | $1.93 |
+| 32 | 218 | **12.1x** | $1.52 |
+
+**Continuous batching is the whole reason to run vLLM.** Throughput climbs from 18
+tokens/s at one request to 218 at 32 concurrent — a **12.1x gain** on the same
+GPU. Compare Experiment 2's dry-run against local Ollama, which gained 1.1x:
+Ollama serves one stream at a time, vLLM packs the batch. Cost per token tracks
+inversely: $18/1M idle, $1.52/1M full.
+
+**But self-hosting a 72B still loses to the hosted API here.** Even at 32
+concurrent — 12x batched — self-hosted output costs $1.52/1M, still above
+DeepSeek's ~$1.10. Extrapolating the curve, break-even sits near ~300 tokens/s,
+roughly concurrency 48+, i.e. you must keep the A100 near saturation around the
+clock to match a pay-per-use API. This lands the same lesson as Experiments 4-5
+from the serving side: a strong-and-cheap hosted open model (DeepSeek) is priced
+so aggressively that self-hosting the equivalent only wins at sustained high
+utilization. For most workloads, calling the API is cheaper than owning the GPU.
+
+The honest caveats: TTFT (451 ms) includes network round-trip over RunPod's proxy,
+not just the GPU; and `--max-model-len 4096` with a single A100 caps the batch, so
+throughput would keep rising with more memory or a second GPU, pushing break-even
+lower. The direction of the conclusion is robust; the exact crossover is
+workload- and hardware-specific, which is exactly why the harness is parameterized.
+
 ## What this validates
 
 - SLM-first with an escalation gate reproduces on real models: most traffic
