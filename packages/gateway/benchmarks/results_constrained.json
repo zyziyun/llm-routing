@@ -1,0 +1,180 @@
+{
+  "models": {
+    "edge": "llama3.2:1b",
+    "mid": "gemma4:e2b"
+  },
+  "tiers": {
+    "edge": {
+      "model": "llama3.2:1b",
+      "n": 10,
+      "valid_free": 10,
+      "valid_constrained": 10,
+      "rate_free": 1.0,
+      "rate_constrained": 1.0,
+      "avg_tokens_free": 27.2,
+      "avg_tokens_constrained": 22.7,
+      "escalations_removed": 0
+    },
+    "mid": {
+      "model": "gemma4:e2b",
+      "n": 10,
+      "valid_free": 10,
+      "valid_constrained": 10,
+      "rate_free": 1.0,
+      "rate_constrained": 1.0,
+      "avg_tokens_free": 265.7,
+      "avg_tokens_constrained": 24.0,
+      "escalations_removed": 0
+    }
+  },
+  "per_task": [
+    {
+      "edge": [
+        {
+          "id": "p1",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 22,
+          "constrained_tokens": 18
+        },
+        {
+          "id": "p2",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 23,
+          "constrained_tokens": 19
+        },
+        {
+          "id": "p3",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 24,
+          "constrained_tokens": 20
+        },
+        {
+          "id": "p4",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 23,
+          "constrained_tokens": 19
+        },
+        {
+          "id": "p5",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 24,
+          "constrained_tokens": 20
+        },
+        {
+          "id": "p6",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 32,
+          "constrained_tokens": 28
+        },
+        {
+          "id": "p7",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 29,
+          "constrained_tokens": 25
+        },
+        {
+          "id": "p8",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 21,
+          "constrained_tokens": 21
+        },
+        {
+          "id": "p9",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 45,
+          "constrained_tokens": 32
+        },
+        {
+          "id": "p10",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 29,
+          "constrained_tokens": 25
+        }
+      ]
+    },
+    {
+      "mid": [
+        {
+          "id": "p1",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 216,
+          "constrained_tokens": 15
+        },
+        {
+          "id": "p2",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 283,
+          "constrained_tokens": 21
+        },
+        {
+          "id": "p3",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 213,
+          "constrained_tokens": 19
+        },
+        {
+          "id": "p4",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 237,
+          "constrained_tokens": 19
+        },
+        {
+          "id": "p5",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 393,
+          "constrained_tokens": 15
+        },
+        {
+          "id": "p6",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 282,
+          "constrained_tokens": 31
+        },
+        {
+          "id": "p7",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 317,
+          "constrained_tokens": 28
+        },
+        {
+          "id": "p8",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 213,
+          "constrained_tokens": 29
+        },
+        {
+          "id": "p9",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 274,
+          "constrained_tokens": 41
+        },
+        {
+          "id": "p10",
+          "free_valid": true,
+          "constrained_valid": true,
+          "free_tokens": 229,
+          "constrained_tokens": 22
+        }
+      ]
+    }
+  ]
+}
