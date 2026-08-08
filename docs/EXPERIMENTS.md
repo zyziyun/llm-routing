@@ -91,6 +91,49 @@ treats schema validity as a first-class accept condition and why
 can still emit a structure the caller cannot parse, and only decoding-level
 constraints remove that failure mode rather than hoping the model complies.
 
+## Experiment 2: constrained decoding on real small models
+
+`benchmarks/run_constrained_bench.py` runs 10 strict-JSON extraction tasks on the
+two cheap tiers twice: once free-form, once with the decoder constrained to the
+task's JSON Schema through Ollama's OpenAI-compatible `response_format`, the
+local-tier analogue of Outlines or XGrammar. Both conditions ask for JSON in the
+prompt, so the only variable is the decoder constraint. Validity is strict: parse
+must succeed, every required key present, every value the right type.
+
+The first pass looked like a landslide for constraints, 0% free-form to 40%. It
+was an artifact. At a 200-token cap the verbose free-form answers were truncated
+mid-object and scored invalid. That is a token-budget confound, not a structure
+failure, so the budget was raised to 400 and the run repeated. The honest result:
+
+![tokens per answer, free vs constrained](../packages/gateway/docs/screenshots/constrained-tokens.svg)
+
+| Tier | Free-form valid | Constrained valid | Avg tokens free | Avg tokens constrained |
+|---|---|---|---|---|
+| edge (1b) | 100% | 100% | 27 | 23 |
+| mid (2b) | 100% | 100% | 266 | 24 |
+
+Two findings, neither the one the naive run suggested.
+
+**Validity is not where constraint pays off here.** Given a clear instruction and
+enough tokens, both the 1B and the 2B model already emit strict-valid JSON on
+every task. Constrained decoding removes zero validity-caused escalations on this
+set. Instruction following, not decoding, carried simple single-object
+extraction.
+
+**Output discipline is where it pays off.** The 2B model free-form averages 266
+completion tokens per answer, wrapping every result in markdown fences and a
+preamble, against 24 constrained: **11x fewer tokens for the same valid JSON**.
+The 1B model is already terse, 27 to 23. That verbosity is a real failure mode,
+not a cosmetic one: it is exactly what truncated the first run under a normal
+token cap and turned valid content into invalid output. Constrained decoding
+makes small-model structured output compact, deterministic, and truncation-proof,
+which is a cost, latency, and reliability win at once.
+
+The honest caveat: these schemas are shallow. Constraint's validity benefit grows
+with nested objects, enums, and arrays, and with weaker instruction following. On
+flat two-field extractions a good prompt is enough for validity, and the win is
+the 11x token collapse.
+
 ## What this validates
 
 - SLM-first with an escalation gate is not a story, it reproduces on real

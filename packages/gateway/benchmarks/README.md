@@ -19,7 +19,19 @@ Outputs:
 - `results.json` — per-task matrix and aggregated strategies.
 - `../docs/screenshots/bench-pareto.svg`, `bench-quality.svg` — charts.
 
-Findings and analysis are in [`docs/EXPERIMENTS.md`](../../../docs/EXPERIMENTS.md).
+## Constrained decoding
+
+`run_constrained_bench.py` runs the strict-JSON extraction set (`tasks_schema.jsonl`)
+on the two cheap tiers, free-form vs decoder-constrained to the schema, and
+measures validity and tokens for each. It writes `results_constrained.json` and
+`../docs/screenshots/constrained-tokens.svg`.
+
+```bash
+python run_constrained_bench.py
+```
+
+Findings and analysis for both experiments are in
+[`docs/EXPERIMENTS.md`](../../../docs/EXPERIMENTS.md).
 
 `tasks.jsonl` is the task set: easy / medium / hard prompts graded by the judge,
 plus strict-JSON extractions graded on validity. Edit it to benchmark your own
