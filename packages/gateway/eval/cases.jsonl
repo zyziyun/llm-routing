@@ -1,0 +1,20 @@
+{"id": "e1", "prompt": "What is the capital of France?", "difficulty": "easy"}
+{"id": "e2", "prompt": "Translate 'good morning' into Spanish.", "difficulty": "easy"}
+{"id": "e3", "prompt": "Convert 100 Fahrenheit to Celsius.", "difficulty": "easy"}
+{"id": "e4", "prompt": "Define the word 'ephemeral' in one sentence.", "difficulty": "easy"}
+{"id": "e5", "prompt": "List the days of the week.", "difficulty": "easy"}
+{"id": "e6", "prompt": "Spell the word 'necessary'.", "difficulty": "easy"}
+{"id": "m1", "prompt": "Summarize the plot of Romeo and Juliet in three sentences.", "difficulty": "medium"}
+{"id": "m2", "prompt": "Write a short function to reverse a linked list and explain it.", "difficulty": "medium"}
+{"id": "m3", "prompt": "Extract the person's name and age from: John Doe is 34 years old.", "difficulty": "medium", "json_schema": {"required": ["name", "age"], "types": {"name": "string", "age": "number"}}}
+{"id": "m4", "prompt": "Explain what a database index is and when it helps.", "difficulty": "medium"}
+{"id": "m5", "prompt": "Give three pros and cons of remote work.", "difficulty": "medium"}
+{"id": "m6", "prompt": "Extract order id and total from: Order 88213 totaled 149 dollars.", "difficulty": "medium", "json_schema": {"required": ["order_id", "total"], "types": {"order_id": "number", "total": "number"}}}
+{"id": "h1", "prompt": "Prove that the square root of 2 is irrational, step by step with rigorous reasoning.", "difficulty": "hard"}
+{"id": "h2", "prompt": "Design a distributed rate limiter for a multi-region API and discuss the consistency trade-offs.", "difficulty": "hard"}
+{"id": "h3", "prompt": "Derive the time complexity of quicksort in the average and worst case and explain the difference.", "difficulty": "hard"}
+{"id": "h4", "prompt": "Compare optimistic vs pessimistic concurrency control and reason about when each wins under contention.", "difficulty": "hard"}
+{"id": "h5", "prompt": "Given a system with a hot partition, design a resharding strategy and analyze the edge cases during migration.", "difficulty": "hard"}
+{"id": "h6", "prompt": "Extract the failing service, root cause, and remediation from this incident log and return strict JSON.", "difficulty": "hard", "json_schema": {"required": ["service", "root_cause", "remediation"], "types": {"service": "string", "root_cause": "string", "remediation": "string"}}}
+{"id": "h7", "prompt": "Explain why exponential backoff with jitter beats fixed retries in a thundering-herd scenario, with reasoning.", "difficulty": "hard"}
+{"id": "h8", "prompt": "Design an eval harness for an agent that files tickets, reasoning about what to measure and why.", "difficulty": "hard"}

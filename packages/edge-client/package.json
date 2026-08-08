@@ -1,0 +1,22 @@
+{
+  "name": "edge-llm-router",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "On-device (client-side) LLM router: run a small model in the browser, keep most turns local, escalate only the hard ones to a cloud gateway.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test",
+    "eval": "node eval/run-eval.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.79"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0"
+  }
+}

@@ -1,0 +1,51 @@
+# Full local production stack: gateway + Redis (shared state) + Prometheus
+# (scrape) + Grafana (dashboard). Runs on mock providers out of the box;
+# set OPENAI_* / EDGE_BACKEND to go live.
+#
+#   docker compose -f deploy/docker-compose.yml up --build
+#   gateway   http://localhost:8000        (POST /v1/chat/completions)
+#   metrics   http://localhost:8000/metrics
+#   grafana   http://localhost:3000        (admin / admin)
+
+services:
+  gateway:
+    build:
+      context: ..
+      dockerfile: Dockerfile.gateway
+    ports: ["8000:8000"]
+    environment:
+      GW_ENV: prod
+      GW_REDIS_URL: redis://redis:6379/0
+      GW_EDGE_BACKEND: mock
+      GW_CHEAP_BACKEND: mock
+      GW_FRONTIER_BACKEND: mock
+      # GW_API_KEYS_JSON: '{"team-a":{"tenant":"a","rpm":300,"daily_usd":50}}'
+      # OPENAI_BASE_URL: https://api.openai.com/v1
+      # OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      redis: {condition: service_healthy}
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on: [gateway]
+
+  grafana:
+    image: grafana/grafana:latest
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    depends_on: [prometheus]

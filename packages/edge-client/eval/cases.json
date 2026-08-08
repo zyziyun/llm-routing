@@ -1,0 +1,16 @@
+[
+  { "prompt": "What is the capital of France?" },
+  { "prompt": "Translate 'good morning' into Spanish." },
+  { "prompt": "Convert 100 Fahrenheit to Celsius." },
+  { "prompt": "Define the word ephemeral in one sentence." },
+  { "prompt": "List the days of the week." },
+  { "prompt": "Summarize what a REST API is in two sentences." },
+  { "prompt": "Extract name and age from: John Doe is 34.", "jsonSchema": { "required": ["name", "age"], "types": { "name": "string", "age": "number" } } },
+  { "prompt": "Give three quick tips for better sleep." },
+  { "prompt": "Prove that the square root of 2 is irrational, step by step." },
+  { "prompt": "Design a distributed rate limiter and reason about the consistency trade-offs." },
+  { "prompt": "Derive the average and worst case time complexity of quicksort." },
+  { "prompt": "Compare optimistic and pessimistic concurrency control under high contention." },
+  { "prompt": "Extract failing service, root cause, and fix from this long incident log and return strict JSON.", "jsonSchema": { "required": ["service", "root_cause", "fix"], "types": { "service": "string", "root_cause": "string", "fix": "string" } } },
+  { "prompt": "Explain why exponential backoff with jitter beats fixed retries in a thundering herd." }
+]

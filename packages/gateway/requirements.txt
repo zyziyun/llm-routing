@@ -1,0 +1,16 @@
+# The lab core (mock providers, CLI, eval, tests) needs only the stdlib.
+# The production gateway (src/gateway) needs the stack below.
+
+# gateway service
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2
+pydantic-settings>=2
+prometheus-client>=0.20
+
+# live backends: ollama (edge) / openai-compatible (cloud) + shared state
+httpx>=0.27
+redis>=5           # production shared state; omit to use in-memory fallback
+
+# dev
+pytest>=8

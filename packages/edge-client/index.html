@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edge LLM Router — on-device first, cloud on escalation</title>
+    <link rel="stylesheet" href="/src/ui/styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Edge LLM Router</h1>
+      <p class="sub">
+        A small model runs <strong>in your browser</strong>. Most turns are
+        answered on device and never leave the machine. Only the hard or
+        low-confidence turns escalate to the cloud gateway.
+      </p>
+
+      <section id="status" class="card">Booting…</section>
+
+      <section class="card">
+        <label>
+          Prompt
+          <textarea id="prompt" rows="3" placeholder="Ask something easy (stays local) or hard (escalates)…"></textarea>
+        </label>
+        <label class="row">
+          <input type="checkbox" id="schema" />
+          demand strict JSON (small models often fail this → escalation)
+        </label>
+        <button id="send">Route</button>
+      </section>
+
+      <section id="answer" class="card hidden">
+        <div class="trail" id="trail"></div>
+        <pre id="out"></pre>
+      </section>
+
+      <section class="card metrics">
+        <h2>Session</h2>
+        <div id="metrics" class="grid"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
