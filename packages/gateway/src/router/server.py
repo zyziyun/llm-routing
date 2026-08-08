@@ -23,7 +23,7 @@ except ImportError as e:  # pragma: no cover
 from .router import Router
 from .types import CompletionRequest
 
-app = FastAPI(title="llm-router-lab", version="0.1.0")
+app = FastAPI(title="llm-router", version="0.1.0")
 _router = Router()
 _stats: Counter = Counter()
 

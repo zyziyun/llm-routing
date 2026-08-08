@@ -1,5 +1,5 @@
-// UI wiring. Pure DOM, no framework, so the teaching focus stays on the
-// routing logic rather than a component library. Renders the per-request
+// UI wiring. Pure DOM, no framework, to keep the surface area small and the
+// focus on the routing logic rather than a component library. Renders the per-request
 // decision trail and a live session panel: local share, bytes kept private,
 // and cost saved versus cloud-only.
 

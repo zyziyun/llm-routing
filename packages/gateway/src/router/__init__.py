@@ -1,4 +1,4 @@
-"""llm-router-lab: a small, deployable LLM router / gateway.
+"""llm-router: a small, deployable LLM router / gateway.
 
 Public surface:
     from router import Router, CompletionRequest

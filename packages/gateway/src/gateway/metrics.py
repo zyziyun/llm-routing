@@ -1,5 +1,6 @@
 """Prometheus metrics. Exposed at /metrics for scraping. These are the
-numbers you put on a Grafana dashboard and cite in an interview."""
+numbers you put on a Grafana dashboard: request rate, latency, spend, tier
+mix, breaker trips."""
 
 from __future__ import annotations
 

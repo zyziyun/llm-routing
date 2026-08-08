@@ -1,6 +1,6 @@
 """Runtime configuration. All knobs live here and can be overridden by env.
 
-The defaults make the lab run fully offline with mock providers, no API
+The defaults make it run fully offline with mock providers, no API
 keys, no GPU. Point the *_BACKEND vars at real providers to go live.
 """
 
@@ -40,7 +40,7 @@ class Config:
     confidence_threshold: float = _f("CONFIDENCE_THRESHOLD", 0.62)
 
     # Optional second-stage LLM-as-judge on non-schema tasks. Off by default
-    # so the lab needs no keys; when on, the FRONTIER provider scores quality.
+    # so it needs no keys; when on, the FRONTIER provider scores quality.
     use_llm_judge: bool = os.environ.get("USE_LLM_JUDGE", "0") == "1"
     llm_judge_threshold: float = _f("LLM_JUDGE_THRESHOLD", 0.6)
 

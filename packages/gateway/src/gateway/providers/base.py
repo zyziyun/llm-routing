@@ -1,4 +1,4 @@
-"""Async provider protocol. Same reply shape as the lab core, but every
+"""Async provider protocol. Same reply shape as the router core, but every
 call is awaitable so one worker handles many concurrent requests."""
 
 from __future__ import annotations

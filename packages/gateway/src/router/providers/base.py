@@ -18,5 +18,5 @@ class Provider(Protocol):
 
 def estimate_tokens(text: str) -> int:
     """Cheap token estimate, ~4 chars per token. Good enough for cost math
-    in the lab; swap for a real tokenizer when you wire real providers."""
+    here; swap for a real tokenizer when you wire real providers."""
     return max(1, len(text) // 4)

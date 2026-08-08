@@ -1,16 +1,17 @@
 # llm-routing
 
-A teaching monorepo for **LLM routing across the full edge↔cloud spectrum**.
-Same idea in two topologies, built to run, deploy, and teach:
+LLM routing across the full **edge↔cloud spectrum**. The same idea — send each
+request to the smallest place that can answer it well — in two runtimes that
+compose into one system.
 
-| Package | Topology | Stack | What it is |
+| Package | Where it runs | Stack | What it is |
 |---|---|---|---|
-| [`packages/gateway`](packages/gateway) | Server-side gateway | Python, FastAPI, Redis, k8s | A production LLM gateway: classify → route across tiers → quality-gate → escalate, with circuit breakers, budgets, metrics, OpenAI-compatible API. |
-| [`packages/edge-client`](packages/edge-client) | On-device / client-side | TypeScript, WebLLM, WebGPU | A router that runs a small model **in the browser**, keeps most turns local, and escalates only the hard ones to the gateway. |
+| [`packages/gateway`](packages/gateway) | Server-side | Python, FastAPI, Redis, k8s | A production LLM gateway: classify → route across tiers → quality-gate → escalate, with per-provider circuit breakers, per-key budgets, an OpenAI-compatible API, and Prometheus metrics. |
+| [`packages/edge-client`](packages/edge-client) | On-device (browser) | TypeScript, WebLLM, WebGPU | A router that runs a small model **in the browser**, answers most turns locally, and escalates only the hard ones to the gateway. |
 
-They are one system: the on-device router's escalation backend **is** the
-gateway. Run both and the browser answers easy turns locally (nothing leaves
-the device) and forwards hard turns to your deployed gateway.
+The two halves are one system: the on-device router's escalation backend **is**
+the gateway. Run both and the browser answers easy turns locally — nothing
+leaves the device — and forwards the hard turns to the deployed gateway.
 
 ```
                          ┌─────────────────────── on device (edge-client) ──────────────────────┐
@@ -23,43 +24,41 @@ the device) and forwards hard turns to your deployed gateway.
    └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Why one repo
+Both ends implement the same three pieces:
 
-The two halves teach the same three ideas from opposite ends, so seeing them
-together is the lesson:
+- **Routing decision** — classify difficulty, pick a tier.
+- **Quality-aware fallback** — accept only if valid and confident, else escalate.
+- **Eval** — measure the cost / privacy / quality tradeoff on real cases.
 
-- **AI routing decision** — classify difficulty, pick a tier.
-- **Quality-aware fallback** — accept only if valid + confident, else escalate.
-- **Eval as output** — prove cost / privacy / quality tradeoffs on real cases.
-
-Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the spectrum and the
-tradeoffs, and [`docs/TEACHING.md`](docs/TEACHING.md) for the course built on
-top of both.
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and the
+tradeoffs.
 
 ## Quickstart
 
 ```bash
-# 1. server-side gateway (Python) — runs offline on mock providers
+# server-side gateway (Python) — runs offline on mock providers, no keys
 cd packages/gateway
-PYTHONPATH=src python -m pytest -q            # 13 tests
+pip install -r requirements.lock
+PYTHONPATH=src pytest -q                       # 13 tests
 PYTHONPATH=src uvicorn gateway.app:app --port 8000
 
-# 2. on-device client (TypeScript) — routing brain tests in Node, no browser
+# on-device client (TypeScript) — routing core tests in Node, no browser
 cd packages/edge-client
-node --test                                   # 8 tests
-node eval/run-eval.ts                          # local vs cloud vs router
-npm install && npm run dev                     # full browser demo (WebGPU)
+node --test                                    # 8 tests
+node eval/run-eval.ts                           # local vs cloud vs router
+npm install && npm run dev                      # browser app (WebGPU)
 ```
 
 Or from the root:
 
 ```bash
-make test     # runs both packages' tests
-make eval      # runs both evals
+make test     # both packages
+make eval      # both evals
 ```
 
 ## Status
 
-Both packages run and are tested offline with no API keys and no GPU. The
-gateway deploys to Cloud Run / k8s (`packages/gateway/deploy`); the edge client
-runs a real model in Chrome/Edge 113+ and degrades gracefully elsewhere.
+Both packages run and test offline with no API keys and no GPU. The gateway
+deploys to Cloud Run or k8s (`packages/gateway/deploy`); the edge client runs a
+real model in Chrome/Edge 113+ and degrades gracefully elsewhere. CI runs both
+suites, the gateway Docker build, and the edge typecheck on every push.

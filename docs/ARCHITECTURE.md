@@ -2,7 +2,7 @@
 
 Both packages solve the same problem — *send each request to the smallest
 place that can answer it well* — but at opposite ends of a spectrum. This doc
-is the senior-level view that ties them together.
+ties them together.
 
 ## The spectrum
 
@@ -50,11 +50,11 @@ Both packages implement the same pipeline; only the runtime differs.
 | Reliability | per-provider circuit breaker + timeouts | local engine failure / no-WebGPU → escalate |
 | Eval | router vs always-frontier: cost, latency, validity | local-only vs cloud-only vs router: privacy, cost, quality |
 
-The key correctness lesson, identical on both ends: for structured/agent
-tasks, gate on **structured-output validity**, not on preference. Small models
-(local or cheap) botch strict JSON; the gate catches it and escalates.
+The key correctness rule, identical on both ends: for structured/agent tasks,
+gate on **structured-output validity**, not on preference. Small models (local
+or cheap) botch strict JSON; the gate catches it and escalates.
 
-## Senior-depth points worth teaching
+## Design points worth calling out
 
 - **Uncertainty-aware escalation.** Escalate on low token-logprob confidence,
   schema-invalid output, refusal, or context overflow — not just on errors.
@@ -76,7 +76,7 @@ tasks, gate on **structured-output validity**, not on preference. Small models
   server you scale workers and share state in Redis; on the client you have N
   heterogeneous devices, no shared state, and privacy by construction.
 
-## Extensions (good student projects)
+## Extensions
 
 - Speculative / draft-verify: local model drafts, cloud verifies only when the
   draft is uncertain.

@@ -1,7 +1,6 @@
 # Design notes
 
-This is the document to read before defending the project in an interview.
-It states the business context, the architecture, and the tradeoffs that
+This states the business context, the architecture, and the tradeoffs that
 were deliberate.
 
 ## 1. Business context
@@ -57,7 +56,7 @@ The industry splits these:
 - A **router** (RouteLLM) is the brain: it decides *which* model a request
   should use, usually by predicted difficulty.
 
-Most production stacks want both. This lab is a compact version of both: the
+Most production stacks want both. This package is a compact version of both: the
 gateway plumbing (tiers, cache, fallback, cost accounting) plus the router
 brain (classify, quality-gated escalation).
 
@@ -90,10 +89,10 @@ Two escalation triggers, straight from the on-device routing literature:
   model, is bumped up a tier. This is "uncertainty-aware escalation."
 
 An optional third stage runs an LLM-as-judge on non-schema tasks, scoring the
-answer with the frontier model. Off by default so the lab needs no keys; for
+answer with the frontier model. Off by default so it needs no keys; for
 RAG tasks, swap in RAGAS-style faithfulness and answer-relevance.
 
-## 5. Tradeoffs worth defending
+## 5. Deliberate tradeoffs
 
 - **Escalation is not free.** Cost and latency accrue across every attempt.
   A request that walks `edge -> cheap -> frontier` costs more and is slower
@@ -111,7 +110,7 @@ RAG tasks, swap in RAGAS-style faithfulness and answer-relevance.
   request that starts too low simply escalates. Cheap insurance.
 - **Reliability routing vs intelligence routing are different.** Fallback on
   provider error is about availability; escalation on low quality is about
-  model selection. This lab does both but keeps them conceptually separate in
+  model selection. This package does both but keeps them conceptually separate in
   the gate and the ladder.
 
 ## 6. What to build next

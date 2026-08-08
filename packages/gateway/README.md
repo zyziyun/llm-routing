@@ -1,12 +1,12 @@
-# llm-router-lab
+# gateway — server-side LLM router
 
 A small, deployable **LLM router / gateway**. One endpoint takes a request,
 decides how hard it is, tries the cheapest capable tier first, checks the
 answer's quality, and escalates only when needed.
 
-It is built to teach and to fork: the whole thing runs offline on mock
-providers with **no API keys and no GPU**, then swaps to real backends
-(Ollama on-device, plus any OpenAI-compatible API) by changing env vars.
+It runs offline on mock providers with **no API keys and no GPU**, then swaps
+to real backends (Ollama on-device, plus any OpenAI-compatible API) by changing
+env vars.
 
 ```
 cache  ->  classify  ->  route (SLM-first)  ->  quality gate  ->  escalate
@@ -17,7 +17,7 @@ cache  ->  classify  ->  route (SLM-first)  ->  quality gate  ->  escalate
 The 2026 default should not be "call the frontier model for everything." It
 should be "use the smallest model that clears the quality bar for this
 request." That is a cost decision, a latency decision, and often a privacy
-decision. This lab is the reference implementation of that idea, with the
+decision. This package is the reference implementation of that idea, with the
 three pieces that make it more than a dumb proxy:
 
 1. **AI routing decision.** A classifier estimates difficulty and picks the
@@ -85,8 +85,8 @@ PYTHONPATH=src uvicorn router.server:app --reload
 Or with Docker:
 
 ```bash
-docker build -t llm-router-lab .
-docker run -p 8000:8000 llm-router-lab
+docker build -t llm-router .
+docker run -p 8000:8000 llm-router
 ```
 
 ## Go live
@@ -120,20 +120,20 @@ tests/            offline, no keys
 ```
 
 See `DESIGN.md` for the architecture, the gateway-vs-router distinction, and
-the tradeoffs worth defending in an interview.
+the tradeoffs behind the design.
 
 ---
 
 ## Production gateway (`src/gateway`)
 
-The lab above teaches the routing idea in a single synchronous process. The
-`gateway` package is the production service built on the same brain: async,
+The `router` core above runs the routing idea in a single synchronous process.
+The `gateway` module is the production service built on the same core: async,
 horizontally scalable, and OpenAI-compatible so existing clients point at it
 unchanged.
 
-What it adds over the lab:
+What the gateway adds over the router core:
 
-| Concern | Lab | Gateway |
+| Concern | router core | gateway |
 |---|---|---|
 | Concurrency | sync | async FastAPI + pooled `httpx.AsyncClient` |
 | API | custom `/route` | OpenAI-compatible `/v1/chat/completions`, streaming SSE |

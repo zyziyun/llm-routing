@@ -1,4 +1,4 @@
-"""Async mock provider. Reuses the lab's deterministic difficulty model so
+"""Async mock provider. Reuses the router core's deterministic difficulty model so
 the gateway behaves identically offline, but with async I/O and simulated
 latency via asyncio.sleep, so concurrency is real."""
 

@@ -1,4 +1,4 @@
-"""Async production router. Same brain as the lab (classify -> route ->
+"""Async production router. Same core as the synchronous router package (classify -> route ->
 quality gate -> escalate), plus the reliability layer that a demo lacks:
 per-provider circuit breakers, per-attempt timeouts, and escalation on
 provider failure as well as on low quality.

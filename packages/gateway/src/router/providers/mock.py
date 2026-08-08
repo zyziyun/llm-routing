@@ -1,6 +1,6 @@
 """Deterministic mock provider.
 
-Lets the whole lab run with no keys, no GPU, no network, while still
+Lets everything run with no keys, no GPU, no network, while still
 producing a realistic cost/quality/escalation story:
 
   - Easy tasks: even the EDGE tier answers confidently and validly.

@@ -21,7 +21,7 @@ const cases: RouterRequest[] = JSON.parse(readFileSync(join(here, "cases.json"),
 
 function quality(req: RouterRequest, text: string, confidence: number): number {
   // Validity-based quality: strict JSON must validate; otherwise use the
-  // acceptability signal. This mirrors the server-side lesson: for structured
+  // acceptability signal. Same rule as the server-side gateway: for structured
   // tasks, measure validity, not preference.
   if (req.jsonSchema) return validateSchema(text, req.jsonSchema).ok ? 1 : 0;
   return confidence >= 0.6 ? 1 : 0;

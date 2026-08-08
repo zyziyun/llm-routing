@@ -12,7 +12,7 @@ A reply is accepted only if BOTH hold:
      low-confidence local answer is bumped to a stronger tier.
 
 Optionally a third stage runs an LLM-as-judge for non-schema tasks, scoring
-the answer's quality with a stronger model. Off by default so the lab needs
+the answer's quality with a stronger model. Off by default so it needs
 no keys.
 """
 
