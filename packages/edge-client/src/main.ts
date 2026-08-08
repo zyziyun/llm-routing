@@ -30,7 +30,14 @@ async function boot() {
   let local: Engine | null = null;
   let statusText: string;
 
-  if (WebLLMEngine.webgpuAvailable()) {
+  // ?engine=mock forces the deterministic mock local tier: instant, no model
+  // download. Handy for demos, tests, and no-WebGPU machines.
+  const forceMock = new URLSearchParams(location.search).get("engine") === "mock";
+
+  if (forceMock) {
+    local = new MockLocalEngine();
+    statusText = "Mock local tier (demo mode). Routing logic is identical to the real on-device model.";
+  } else if (WebLLMEngine.webgpuAvailable()) {
     status.textContent = "WebGPU found. Loading a small model into your browser… (first load downloads weights, then they are cached)";
     const engine = new WebLLMEngine(LOCAL_MODELS.tiny, (p) => {
       status.innerHTML = `Loading local model… <progress value="${p.progress}" max="1"></progress> ${p.text}`;
