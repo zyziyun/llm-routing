@@ -33,6 +33,14 @@ Both ends implement the same three pieces:
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and the
 tradeoffs.
 
+## The edge client, in the browser
+
+The on-device router escalates a hard prompt to the cloud, but strips PII on
+device first, so the cloud only sees `[EMAIL]`. The panel tracks local share,
+bytes off device, PII kept on device, and cost saved.
+
+![Edge client — on-device PII redaction before escalation](packages/edge-client/docs/screenshots/02-pii-redaction.png)
+
 ## Quickstart
 
 ```bash

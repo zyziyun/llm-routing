@@ -18,6 +18,21 @@ counterpart to Microsoft Presidio), so emails, phones, SSNs, cards, and API keys
 never reach the cloud even when the request does. The session panel counts PII
 entities kept on device.
 
+## Screenshots
+
+A hard prompt carrying an email and phone escalates to the cloud, but the PII
+is stripped on device first, so the cloud only sees `[EMAIL]`. The session panel
+tracks local share, bytes off device, PII kept on device, and cost saved.
+
+![On-device PII redaction before escalation](docs/screenshots/02-pii-redaction.png)
+
+Easy prompts are answered on device and never leave the machine:
+
+![Answered on device](docs/screenshots/01-local.png)
+
+(Captured with `?engine=mock` for a deterministic demo; the real path runs a
+WebLLM model on WebGPU.)
+
 ## Run it
 
 ```bash
