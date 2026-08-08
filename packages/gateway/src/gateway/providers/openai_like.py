@@ -12,9 +12,10 @@ from typing import AsyncIterator
 
 import httpx
 
-from router.config import TierConfig
+from router.config import CONFIG, TierConfig
 from router.providers.base import estimate_tokens
 from router.types import CompletionRequest, ProviderReply, Tier
+from router.providers.openai_like import _json_schema
 
 _client: httpx.AsyncClient | None = None
 
@@ -45,11 +46,17 @@ class AsyncOpenAIProvider:
 
     async def complete(self, request: CompletionRequest) -> ProviderReply:
         started = time.time()
+        body = {"model": self.model, "messages": self._messages(request),
+                "max_tokens": request.max_tokens, "temperature": 0.2}
+        if request.requires_schema and CONFIG.constrained_decoding:
+            body["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "reply", "schema": _json_schema(request.json_schema)},
+            }
         resp = await _shared_client().post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
-            json={"model": self.model, "messages": self._messages(request),
-                  "max_tokens": request.max_tokens, "temperature": 0.2},
+            json=body,
         )
         resp.raise_for_status()
         data = resp.json()

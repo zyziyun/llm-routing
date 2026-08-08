@@ -106,6 +106,29 @@ Copy `.env.example` to `.env` and point tiers at real backends:
 Raise it and more requests escalate (safer, pricier). Lower it and more work
 stays cheap (cheaper, riskier). Everything else is plumbing around this dial.
 
+## Constrained decoding (opt-in)
+
+Small models botch strict JSON, and that alone triggers escalation. Constrained
+decoding removes that failure mode: tiers that control decoding (self-hosted via
+grammar, in the spirit of Outlines / XGrammar) or expose `response_format`
+(hosted APIs) are forced to emit schema-valid structure, so only genuinely hard
+turns still escalate. Semantic quality still gates.
+
+```bash
+PYTHONPATH=src python eval/run_constrained_eval.py
+```
+
+```
+constrained      escalated     cost($)
+off                    5/6     0.00113
+on                     0/6     0.00006
+structure-caused escalations removed: 5   (cost on schema tasks: -94%)
+```
+
+Turn it on with `CONSTRAINED_DECODING=1` (or per request via `constrained` in
+metadata). True grammar constraint needs raw logits, so it is a local/self-hosted
+property; API tiers get the coarser `response_format` guarantee.
+
 ## Layout
 
 ```

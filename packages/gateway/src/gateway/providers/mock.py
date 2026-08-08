@@ -8,7 +8,7 @@ import asyncio
 import json
 from typing import AsyncIterator
 
-from router.config import TierConfig
+from router.config import CONFIG, TierConfig
 from router.providers.base import estimate_tokens
 from router.providers.mock import _DIFF_PENALTY, _SCHEMA_PENALTY, _unit_hash
 from router.types import CompletionRequest, Difficulty, ProviderReply, Tier
@@ -24,9 +24,14 @@ class AsyncMockProvider:
         difficulty = Difficulty(request.metadata.get("difficulty", Difficulty.MEDIUM))
         penalty = _DIFF_PENALTY[difficulty]
         jitter = (_unit_hash(request.prompt + self.tier.value) - 0.5) * 0.08
-        schema_hit = _SCHEMA_PENALTY if (request.requires_schema and self.tier != Tier.FRONTIER) else 0.0
+        constrained = request.requires_schema and request.metadata.get(
+            "constrained", CONFIG.constrained_decoding
+        )
+        schema_hit = 0.0 if constrained else (
+            _SCHEMA_PENALTY if (request.requires_schema and self.tier != Tier.FRONTIER) else 0.0
+        )
         effective = max(0.0, min(1.0, self.cfg.competence - penalty - schema_hit + jitter))
-        return difficulty, round(effective, 3), effective >= 0.6
+        return difficulty, round(effective, 3), (effective >= 0.6) or bool(constrained)
 
     def _text(self, request: CompletionRequest, succeeds: bool) -> str:
         if request.requires_schema:

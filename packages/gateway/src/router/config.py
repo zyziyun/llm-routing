@@ -48,6 +48,16 @@ class Config:
     cache_mode: str = os.environ.get("CACHE_MODE", "exact")
     cache_sim_threshold: float = _f("CACHE_SIM_THRESHOLD", 0.92)
 
+    # Constrained decoding for structured output. When on, tiers that control
+    # decoding (self-hosted via grammar/XGrammar) or expose response_format
+    # (hosted APIs) are forced to emit schema-valid JSON, so structure can no
+    # longer be the reason a turn escalates. Only local models expose raw
+    # logits, so true grammar constraint is a local-tier property; API tiers
+    # get the coarser response_format guarantee. Semantic quality still gates.
+    # Off by default so the base escalation behavior is unchanged; turn it on
+    # (CONSTRAINED_DECODING=1) or per-request to remove schema-caused escalation.
+    constrained_decoding: bool = os.environ.get("CONSTRAINED_DECODING", "0") == "1"
+
     edge: TierConfig = TierConfig(
         model=os.environ.get("EDGE_MODEL", "llama3.2:3b"),
         price_per_1k=_f("EDGE_PRICE_PER_1K", 0.0),      # on-device, free

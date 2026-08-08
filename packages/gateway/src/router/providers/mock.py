@@ -16,7 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 
-from ..config import TierConfig
+from ..config import CONFIG, TierConfig
 from ..types import CompletionRequest, Difficulty, ProviderReply, Tier
 from .base import estimate_tokens
 
@@ -43,16 +43,27 @@ class MockProvider:
         difficulty = Difficulty(request.metadata.get("difficulty", Difficulty.MEDIUM))
         penalty = _DIFF_PENALTY[difficulty]
 
+        # Constrained decoding (per-request override for eval, else the global
+        # default). With it on, structure is guaranteed for schema tasks, so the
+        # schema penalty and the invalid-JSON failure mode both disappear;
+        # semantic confidence still gates.
+        constrained = request.requires_schema and request.metadata.get(
+            "constrained", CONFIG.constrained_decoding
+        )
+
         # Effective competence for THIS request, jittered deterministically.
         jitter = (_unit_hash(request.prompt + self.tier.value) - 0.5) * 0.08
-        schema_hit = _SCHEMA_PENALTY if (request.requires_schema and self.tier != Tier.FRONTIER) else 0.0
+        schema_hit = 0.0 if constrained else (
+            _SCHEMA_PENALTY if (request.requires_schema and self.tier != Tier.FRONTIER) else 0.0
+        )
         effective = max(0.0, min(1.0, self.cfg.competence - penalty - schema_hit + jitter))
         # Confidence tracks effective competence with a little noise.
         confidence = round(max(0.0, min(1.0, effective)), 3)
         succeeds = effective >= 0.6
 
         if request.requires_schema:
-            text = self._schema_answer(request, valid=succeeds)
+            # Grammar/response_format makes the structure always valid.
+            text = self._schema_answer(request, valid=(constrained or succeeds))
         else:
             tag = self.tier.value
             text = (

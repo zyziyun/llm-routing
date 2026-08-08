@@ -12,7 +12,7 @@ import json
 import os
 import time
 
-from ..config import TierConfig
+from ..config import CONFIG, TierConfig
 from ..types import CompletionRequest, ProviderReply, Tier
 from .base import estimate_tokens
 
@@ -20,6 +20,18 @@ try:
     import httpx
 except ImportError:
     httpx = None  # type: ignore
+
+_JSON_TYPES = {"string": "string", "number": "number", "boolean": "boolean",
+               "array": "array", "object": "object"}
+
+
+def _json_schema(minimal: dict) -> dict:
+    """Turn our minimal {required, types} schema into a JSON Schema object for
+    the response_format field."""
+    required = minimal.get("required", [])
+    types = minimal.get("types", {})
+    props = {k: {"type": _JSON_TYPES.get(types.get(k, "string"), "string")} for k in required}
+    return {"type": "object", "properties": props, "required": required, "additionalProperties": False}
 
 
 class OpenAILikeProvider:
@@ -41,18 +53,27 @@ class OpenAILikeProvider:
         if request.requires_schema:
             system += " Return the answer as valid JSON only, before the CONFIDENCE line."
 
+        body = {
+            "model": self.model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": request.prompt},
+            ],
+            "max_tokens": request.max_tokens,
+            "temperature": 0.2,
+        }
+        # API-side constrained decoding: ask the provider to enforce the schema
+        # via response_format (the hosted-API equivalent of grammar constraint).
+        if request.requires_schema and CONFIG.constrained_decoding:
+            body["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "reply", "schema": _json_schema(request.json_schema)},
+            }
+
         resp = httpx.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
-            json={
-                "model": self.model,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": request.prompt},
-                ],
-                "max_tokens": request.max_tokens,
-                "temperature": 0.2,
-            },
+            json=body,
             timeout=120.0,
         )
         resp.raise_for_status()
