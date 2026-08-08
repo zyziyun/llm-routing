@@ -6,6 +6,7 @@ keys, no GPU. Point the *_BACKEND vars at real providers to go live.
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass
 
@@ -24,6 +25,42 @@ class TierConfig:
     base_latency_ms: float
     # How good this tier is, 0..1, used only by the mock provider.
     competence: float
+
+
+@dataclass(frozen=True)
+class CloudTier:
+    """One member of the frontier cloud pool. `price_per_1k` and `competence`
+    are the *measured* effective cost and quality from your own eval, not list
+    price -- a reasoning model's real token bill is only visible after the fact
+    (see docs/EXPERIMENTS.md, experiment 4), so ordering must use observed cost."""
+
+    name: str
+    backend: str          # "mock" | "ollama" | "openai"
+    model: str
+    price_per_1k: float
+    base_latency_ms: float
+    competence: float     # 0..1 measured quality proxy
+
+    def as_tier_config(self) -> TierConfig:
+        return TierConfig(self.model, self.price_per_1k, self.base_latency_ms, self.competence)
+
+
+def _parse_frontier_pool() -> tuple[CloudTier, ...]:
+    """FRONTIER_POOL_JSON: a list of cloud members, e.g.
+    [{"name":"deepseek","backend":"openai","model":"deepseek-chat",
+      "price_per_1k":0.0007,"competence":0.90}, ...]. Empty -> single frontier."""
+    raw = os.environ.get("FRONTIER_POOL_JSON")
+    if not raw:
+        return ()
+    members = []
+    for m in json.loads(raw):
+        members.append(CloudTier(
+            name=m["name"], backend=m.get("backend", "openai"), model=m["model"],
+            price_per_1k=float(m["price_per_1k"]),
+            base_latency_ms=float(m.get("base_latency_ms", 900.0)),
+            competence=float(m.get("competence", 0.9)),
+        ))
+    return tuple(members)
 
 
 @dataclass(frozen=True)
@@ -76,6 +113,16 @@ class Config:
         base_latency_ms=_f("FRONTIER_LATENCY_MS", 900.0),
         competence=_f("FRONTIER_COMPETENCE", 0.97),
     )
+
+    # Frontier as a POOL of clouds. When set, escalation reaches the frontier
+    # once and the pool commits to a SINGLE cloud -- the best measured value
+    # (quality per dollar) or the cheapest -- rather than walking every cloud in
+    # series. Benchmarks (docs/EXPERIMENTS.md experiment 4) showed sequential
+    # multi-cloud escalation double-pays on every miss and loses to selecting
+    # one cloud up front, so the router routes to the frontier, it does not walk
+    # it. Empty pool -> the single `frontier` tier above (backward compatible).
+    frontier_pool: tuple[CloudTier, ...] = _parse_frontier_pool()
+    frontier_select: str = os.environ.get("FRONTIER_SELECT", "best_value")  # best_value | cheapest
 
 
 CONFIG = Config()

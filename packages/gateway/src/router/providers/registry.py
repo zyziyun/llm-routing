@@ -23,9 +23,21 @@ def _build(tier: Tier, backend: str, cfg: TierConfig) -> Provider:
     raise ValueError(f"unknown backend {backend!r} for tier {tier.value}")
 
 
+def _build_frontier() -> Provider:
+    """A pool when FRONTIER_POOL_JSON is set (select one best-value cloud), else
+    the single frontier backend. The pool is what the router escalates *to*."""
+    if CONFIG.frontier_pool:
+        from .frontier_pool import FrontierPool
+
+        members = [(ct, _build(Tier.FRONTIER, ct.backend, ct.as_tier_config()))
+                   for ct in CONFIG.frontier_pool]
+        return FrontierPool(members, policy=CONFIG.frontier_select)
+    return _build(Tier.FRONTIER, CONFIG.frontier_backend, CONFIG.frontier)
+
+
 def build_registry() -> dict[Tier, Provider]:
     return {
         Tier.EDGE: _build(Tier.EDGE, CONFIG.edge_backend, CONFIG.edge),
         Tier.CHEAP: _build(Tier.CHEAP, CONFIG.cheap_backend, CONFIG.cheap),
-        Tier.FRONTIER: _build(Tier.FRONTIER, CONFIG.frontier_backend, CONFIG.frontier),
+        Tier.FRONTIER: _build_frontier(),
     }
