@@ -133,6 +133,21 @@ Turn it on with `CONSTRAINED_DECODING=1` (or per request via `constrained` in
 metadata). True grammar constraint needs raw logits, so it is a local/self-hosted
 property; API tiers get the coarser `response_format` guarantee.
 
+## Benchmark on real local models
+
+`benchmarks/run_bench.py` runs the tier ladder as three real Ollama models
+(`llama3.2:1b` → `gemma4:e2b` → `qwen2.5-coder:14b`), judges answers with the
+strongest model, and plots the router against edge-only and frontier-only. No
+mock providers, no keys.
+
+![cost vs quality on real local models](docs/screenshots/bench-pareto.svg)
+
+At its knee the router **matches frontier quality (0.90) at 59% lower cost**,
+keeping two thirds of traffic off the expensive model. The run also surfaces an
+honest non-monotonic ladder (the 2B mid tier scores below the 1B edge on this
+set) and strict-JSON failures that reach even the frontier. Full analysis in
+[`docs/EXPERIMENTS.md`](../../docs/EXPERIMENTS.md).
+
 ## Layout
 
 ```

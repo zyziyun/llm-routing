@@ -31,7 +31,9 @@ Both ends implement the same three pieces:
 - **Eval** — measure the cost / privacy / quality tradeoff on real cases.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and the
-tradeoffs.
+tradeoffs, and [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md) for the real-model
+benchmark: three local models on a cost-quality Pareto, where the router matches
+frontier quality at 59% lower cost.
 
 ## The edge client, in the browser
 
