@@ -226,9 +226,9 @@ among expensive clouds it loses.
 | Strategy | Quality | Cost / 12 | vs sonnet-only |
 |---|---|---|---|
 | cloud-only:sonnet | 0.83 | $0.043 | baseline |
-| router-2cloud @0.9 (try both clouds) | 0.85 | $0.079 | +84% cost |
-| **router-1cloud @0.9 (select one cloud)** | **0.84** | **$0.037** | **-13% cost** |
-| router-1cloud @0.7 | 0.83 | $0.029 | **-31% cost** |
+| router-cascade @0.9 (try both clouds) | 0.85 | $0.079 | +84% cost |
+| **router-select @0.9 (select one cloud)** | **0.84** | **$0.037** | **-13% cost** |
+| router-select @0.7 | 0.83 | $0.029 | **-31% cost** |
 
 **The fix is to select one cloud, not try several.** A router that escalates to a
 single chosen cloud beats always-cloud by 13% at equal-or-better quality, and by
