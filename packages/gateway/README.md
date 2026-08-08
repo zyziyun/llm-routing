@@ -21,8 +21,12 @@ decision. This package is the reference implementation of that idea, with the
 three pieces that make it more than a dumb proxy:
 
 1. **AI routing decision.** A classifier estimates difficulty and picks the
-   starting tier. Heuristic by default, embedding-based if you wire an
-   embedder. See `src/router/classifier.py`.
+   starting tier. Heuristic by default (`src/router/classifier.py`), or a
+   trained softmax classifier over hashed features (`src/router/learned.py`)
+   that adapts to your own traffic and exposes a calibrated confidence. Compare
+   them with `python eval/run_router_eval.py`; swap in real embeddings to go
+   further. Unlike RouteLLM's preference training, it is judged on downstream
+   validity and cost, not preference.
 2. **Quality-aware fallback.** A gate accepts a reply only if it validates
    (strict JSON when a schema is demanded) and clears a confidence bar.
    A low-confidence on-device answer, or a cheap model that botches strict

@@ -1,0 +1,36 @@
+{"prompt": "Translate good morning into Spanish.", "difficulty": "easy"}
+{"prompt": "What is the capital of France?", "difficulty": "easy"}
+{"prompt": "Convert 100 Fahrenheit to Celsius.", "difficulty": "easy"}
+{"prompt": "Define the word ephemeral.", "difficulty": "easy"}
+{"prompt": "List the days of the week.", "difficulty": "easy"}
+{"prompt": "Spell the word necessary.", "difficulty": "easy"}
+{"prompt": "What is the capital of Japan?", "difficulty": "easy"}
+{"prompt": "Translate thank you into French.", "difficulty": "easy"}
+{"prompt": "Convert 5 kilometers to miles.", "difficulty": "easy"}
+{"prompt": "Define the word gregarious.", "difficulty": "easy"}
+{"prompt": "What is two plus two?", "difficulty": "easy"}
+{"prompt": "List three primary colors.", "difficulty": "easy"}
+{"prompt": "Summarize what a REST API is in two sentences.", "difficulty": "medium"}
+{"prompt": "Explain what a database index is and when it helps.", "difficulty": "medium"}
+{"prompt": "Write a short function to reverse a linked list and explain it.", "difficulty": "medium"}
+{"prompt": "Give three pros and cons of remote work.", "difficulty": "medium"}
+{"prompt": "Summarize the plot of Romeo and Juliet in three sentences.", "difficulty": "medium"}
+{"prompt": "Explain the difference between TCP and UDP.", "difficulty": "medium"}
+{"prompt": "Write a regex to match an email address and explain it.", "difficulty": "medium"}
+{"prompt": "Describe how a hash map works.", "difficulty": "medium"}
+{"prompt": "Explain what caching is and give two examples.", "difficulty": "medium"}
+{"prompt": "Summarize the benefits of unit testing.", "difficulty": "medium"}
+{"prompt": "Explain what an environment variable is.", "difficulty": "medium"}
+{"prompt": "Give a short overview of the HTTP request lifecycle.", "difficulty": "medium"}
+{"prompt": "Prove that the square root of 2 is irrational step by step.", "difficulty": "hard"}
+{"prompt": "Design a distributed rate limiter and reason about consistency trade-offs.", "difficulty": "hard"}
+{"prompt": "Derive the average and worst case time complexity of quicksort.", "difficulty": "hard"}
+{"prompt": "Compare optimistic and pessimistic concurrency control under high contention.", "difficulty": "hard"}
+{"prompt": "Design a resharding strategy for a hot partition and analyze the edge cases.", "difficulty": "hard"}
+{"prompt": "Explain why exponential backoff with jitter beats fixed retries in a thundering herd.", "difficulty": "hard"}
+{"prompt": "Design an eval harness for a ticketing agent and reason about what to measure.", "difficulty": "hard"}
+{"prompt": "Analyze the trade-offs between event sourcing and CRUD persistence.", "difficulty": "hard"}
+{"prompt": "Prove the correctness of Dijkstra's algorithm.", "difficulty": "hard"}
+{"prompt": "Design a multi-region write path and reason about conflict resolution.", "difficulty": "hard"}
+{"prompt": "Derive the bias variance decomposition and explain each term.", "difficulty": "hard"}
+{"prompt": "Compare consensus protocols Raft and Paxos and analyze their failure modes.", "difficulty": "hard"}
