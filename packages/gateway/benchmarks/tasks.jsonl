@@ -1,0 +1,12 @@
+{"id": "e1", "prompt": "What is the capital of France? Answer in one word."}
+{"id": "e2", "prompt": "Translate 'good morning' into Spanish. Give only the translation."}
+{"id": "e3", "prompt": "Convert 100 Fahrenheit to Celsius. Give the number."}
+{"id": "e4", "prompt": "Name the largest planet in the solar system."}
+{"id": "m1", "prompt": "Explain what a database index is and when it helps, in two sentences."}
+{"id": "m2", "prompt": "Write a Python function to reverse a linked list."}
+{"id": "m3", "prompt": "Summarize the difference between TCP and UDP in two sentences."}
+{"id": "h1", "prompt": "Prove that the square root of 2 is irrational, step by step."}
+{"id": "h2", "prompt": "Design a distributed rate limiter and reason about the consistency trade-offs across regions."}
+{"id": "h3", "prompt": "Derive the average-case time complexity of quicksort and explain the recurrence."}
+{"id": "s1", "prompt": "Extract the person name and age from: 'Jane Doe is 34 years old.' Return strict JSON.", "schema": {"required": ["name", "age"], "types": {"name": "string", "age": "number"}}}
+{"id": "s2", "prompt": "Extract order id and total dollars from: 'Order 88213 totaled 149 dollars.' Return strict JSON.", "schema": {"required": ["order_id", "total"], "types": {"order_id": "number", "total": "number"}}}
