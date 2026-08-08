@@ -37,6 +37,11 @@ meaningful cost axis to route against.
 | mid (2b) | 0.42 | 6.8 s | 251 |
 | frontier (14b) | 0.90 | 9.3 s | 160 |
 
+> These quality numbers are self-scored by the frontier model and run high.
+> Experiment 3 measures the bias and Experiment 4 re-runs under an independent
+> judge (edge falls to 0.43, frontier to 0.79). The ordering here holds; the
+> levels are optimistic. Read the absolute numbers as a lenient upper bound.
+
 ## Finding 1: the ladder is not monotonic
 
 The mid tier scores **below** the smaller edge tier on this set, 0.42 against
@@ -173,6 +178,65 @@ The methodological takeaway: a local judge is fine for *relative* routing
 decisions, since it preserves order, but absolute quality claims need an
 independent judge. A self-hosted eval loop should treat its own scores as a
 lenient upper bound.
+
+## Experiment 4: real edge-to-cloud escalation across providers
+
+Experiments 1-3 are all local. This one adds the boundary the whole repo is
+about: local small models that escalate to **real hosted frontiers**.
+`benchmarks/run_hosted_bench.py` runs a four-tier ladder across three providers
+and judges everything with the independent `claude-opus-5` gold judge (so these
+numbers already carry Experiment 3's correction, not the self-judge's leniency).
+
+| Tier | Model | Provider | Gold quality | Cost / 12 tasks |
+|---|---|---|---|---|
+| edge | `llama3.2:1b` | Ollama (local) | 0.43 | $0.0002 |
+| local-frontier | `qwen2.5-coder:14b` | Ollama (local) | 0.79 | $0.018 |
+| cloud:sonnet | `claude-sonnet-5` | Anthropic | 0.83 | $0.043 |
+| cloud:gpt5 | `gpt-5` | OpenAI | 0.75 | $0.069 |
+
+Local prices are equivalent-hosted estimates; cloud prices are real published
+rates (input/output priced separately). The judge is never a tier, so there is
+no self-scoring bias.
+
+![edge to cloud cost vs quality](../packages/gateway/docs/screenshots/hosted-pareto.svg)
+
+**The gold judge confirms Experiment 1 was optimistic.** Under the independent
+judge the local tiers drop hard: edge from 0.69 to 0.43, local-frontier (the
+same qwen model) from 0.90 to 0.79. Experiment 1's ordering held, but its
+absolute quality was inflated by the self-judge, exactly as Experiment 3
+predicted. Trust the numbers in this table over Experiment 1's.
+
+**The router auto-selects the cloud, and that is the whole point.** Nothing is
+pinned to one cloud model. The router walks a cost-ordered chain and the quality
+gate picks whichever tier first clears the bar; at the cloud step it chooses
+across providers on its own. That is what lets the server-side router run
+autonomously: at threshold 0.9 it kept 8 of 12 tasks on local models and
+escalated only the 4 hardest, and the cloud pick was made by the gate, not by a
+human.
+
+**But escalating through two clouds in series is a cost trap.** The obvious
+autonomous design tries each cloud in turn until one passes. It works on quality
+(0.85) but costs $0.079 — *more* than just calling `claude-sonnet-5` directly
+($0.043, 0.83). Two reasons, both real: a miss on the first cloud still bills it
+before the second runs, and static input-price ordering put `gpt-5` first, which
+on this set was both pricier (reasoning tokens inflate its output bill) and lower
+quality. Speculative escalation pays off among cheap local tiers (Experiment 1);
+among expensive clouds it loses.
+
+| Strategy | Quality | Cost / 12 | vs sonnet-only |
+|---|---|---|---|
+| cloud-only:sonnet | 0.83 | $0.043 | baseline |
+| router-2cloud @0.9 (try both clouds) | 0.85 | $0.079 | +84% cost |
+| **router-1cloud @0.9 (select one cloud)** | **0.84** | **$0.037** | **-13% cost** |
+| router-1cloud @0.7 | 0.83 | $0.029 | **-31% cost** |
+
+**The fix is to select one cloud, not try several.** A router that escalates to a
+single chosen cloud beats always-cloud by 13% at equal-or-better quality, and by
+31% at the same quality as sonnet-only, while still keeping two thirds of traffic
+local. The design rule: the cloud tier should be *routed to* (predict the best
+single provider), not *walked* — and it should be ordered by measured effective
+cost, not static list price, since a reasoning model's token bill is only visible
+after the fact.
 
 ## What this validates
 

@@ -43,6 +43,19 @@ echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
 python run_judge_ab.py
 ```
 
+## Real edge -> cloud escalation
+
+`run_hosted_bench.py` adds real hosted frontiers (`claude-sonnet-5`, `gpt-5`) as
+cloud tiers above the local Ollama models, judged by the independent
+`claude-opus-5` gold judge. The router auto-selects the cloud provider via the
+quality gate — nothing is pinned to one model. Needs `ANTHROPIC_API_KEY` and
+`OPENAI_API_KEY` in `.env`. Writes `results_hosted.json` and
+`../docs/screenshots/hosted-pareto.svg` + `hosted-quality.svg`.
+
+```bash
+python run_hosted_bench.py
+```
+
 Findings and analysis for all experiments are in
 [`docs/EXPERIMENTS.md`](../../../docs/EXPERIMENTS.md).
 

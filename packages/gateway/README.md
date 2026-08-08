@@ -145,8 +145,16 @@ mock providers, no keys.
 At its knee the router **matches frontier quality (0.90) at 59% lower cost**,
 keeping two thirds of traffic off the expensive model. The run also surfaces an
 honest non-monotonic ladder (the 2B mid tier scores below the 1B edge on this
-set) and strict-JSON failures that reach even the frontier. Full analysis in
-[`docs/EXPERIMENTS.md`](../../docs/EXPERIMENTS.md).
+set) and strict-JSON failures that reach even the frontier.
+
+`run_hosted_bench.py` extends this across the on-device/cloud boundary: local
+models escalate to real hosted frontiers (`claude-sonnet-5`, `gpt-5`), the router
+auto-selects the cloud provider through the quality gate, and everything is
+scored by an independent `claude-opus-5` judge. It shows a real design trap —
+speculatively trying two clouds in series costs more than calling one directly —
+and the fix (route to a single selected cloud: -13% to -31% vs always-cloud at
+equal quality). Full analysis, including the independent-judge correction to the
+self-scored numbers above, in [`docs/EXPERIMENTS.md`](../../docs/EXPERIMENTS.md).
 
 ## Layout
 
