@@ -1,0 +1,386 @@
+[
+  {
+    "prompt": "What is the capital of Japan? Answer in one word.",
+    "edge_score": 1.0,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.2e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "What is the capital of Canada? One word.",
+    "edge_score": 1.0,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.1e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Translate 'thank you' into French. Give only the translation.",
+    "edge_score": 0.1,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.4e-05,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Translate 'good night' into German. Only the translation.",
+    "edge_score": 0.1,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.3e-05,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Convert 10 kilometers to miles. Give the number.",
+    "edge_score": 0.95,
+    "edge_cost": 9e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.9e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Convert 32 Fahrenheit to Celsius. Give the number.",
+    "edge_score": 1.0,
+    "edge_cost": 1e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.8e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "What is 15% of 200? Give the number.",
+    "edge_score": 1.0,
+    "edge_cost": 8e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.8e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Name the largest ocean on Earth.",
+    "edge_score": 0.95,
+    "edge_cost": 9e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 4.8e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "What color do you get mixing blue and yellow? One word.",
+    "edge_score": 1.0,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "How many days are in a leap year? Give the number.",
+    "edge_score": 1.0,
+    "edge_cost": 5e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "What is the chemical symbol for gold?",
+    "edge_score": 1.0,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Who wrote 'Romeo and Juliet'? Name only.",
+    "edge_score": 1.0,
+    "edge_cost": 4e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 1.3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "What is the square root of 144? Give the number.",
+    "edge_score": 1.0,
+    "edge_cost": 5e-06,
+    "cloud_score": 0.0,
+    "cloud_cost": 1.3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Spell the word 'necessary'.",
+    "edge_score": 0.0,
+    "edge_cost": 5e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 5.3e-05,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "What planet is known as the Red Planet?",
+    "edge_score": 0.95,
+    "edge_cost": 1.2e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 3.4e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Give the past tense of the verb 'to run'.",
+    "edge_score": 1.0,
+    "edge_cost": 5e-06,
+    "cloud_score": 1.0,
+    "cloud_cost": 4.1e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Explain what an API is, in two sentences.",
+    "edge_score": 0.9,
+    "edge_cost": 1.1e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 5.3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Explain the difference between RAM and disk storage, in two sentences.",
+    "edge_score": 0.95,
+    "edge_cost": 1.4e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 5e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Write a Python function that returns the factorial of n.",
+    "edge_score": 1.0,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000369,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Write a Python function that checks if a string is a palindrome.",
+    "edge_score": 1.0,
+    "edge_cost": 2.8e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.00037,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Summarize what version control (git) is for, in two sentences.",
+    "edge_score": 0.6,
+    "edge_cost": 1.2e-05,
+    "cloud_score": 0.98,
+    "cloud_cost": 5.3e-05,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain what a hash table is and why lookups are fast, in two sentences.",
+    "edge_score": 0.95,
+    "edge_cost": 1.1e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 6.5e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Write a SQL query to select all users older than 30 from a table named users.",
+    "edge_score": 0.95,
+    "edge_cost": 2.4e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000137,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Explain the difference between HTTP and HTTPS, in two sentences.",
+    "edge_score": 0.95,
+    "edge_cost": 1.2e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 5.5e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Write a Python one-liner that flattens a list of lists.",
+    "edge_score": 0.05,
+    "edge_cost": 1.4e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000184,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain what caching is and when it helps, in two sentences.",
+    "edge_score": 0.9,
+    "edge_cost": 1.2e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 6.7e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Describe what a REST endpoint is, in two sentences.",
+    "edge_score": 0.75,
+    "edge_cost": 1.3e-05,
+    "cloud_score": 0.97,
+    "cloud_cost": 5.7e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Write a Python function to count word frequencies in a string.",
+    "edge_score": 1.0,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.00037,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Explain the difference between a stack and a queue, in two sentences.",
+    "edge_score": 1.0,
+    "edge_cost": 1.6e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 5.9e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Summarize what a load balancer does, in two sentences.",
+    "edge_score": 0.92,
+    "edge_cost": 1.2e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 4.3e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Write a regex that matches a US phone number.",
+    "edge_score": 0.6,
+    "edge_cost": 2.7e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000248,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain what an index does in a database, in two sentences.",
+    "edge_score": 0.85,
+    "edge_cost": 1.2e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 5.5e-05,
+    "edge_ok": 1
+  },
+  {
+    "prompt": "Prove that there are infinitely many prime numbers, step by step.",
+    "edge_score": 0.05,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000324,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Design a URL shortener and reason about the collision and scaling trade-offs.",
+    "edge_score": 0.15,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.72,
+    "cloud_cost": 0.000372,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Derive the time complexity of merge sort and explain the recurrence.",
+    "edge_score": 0.25,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.00037,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain the CAP theorem and give a concrete example of each trade-off.",
+    "edge_score": 0.15,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.72,
+    "cloud_cost": 0.000371,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Design a rate limiter for a distributed API and discuss consistency across regions.",
+    "edge_score": 0.35,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.72,
+    "cloud_cost": 0.000372,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Prove that the sum of the first n odd numbers equals n squared, by induction.",
+    "edge_score": 0.1,
+    "edge_cost": 3e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000255,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain how TCP congestion control works and why it matters, in detail.",
+    "edge_score": 0.35,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.72,
+    "cloud_cost": 0.000371,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Design a news feed ranking system and reason about freshness vs relevance.",
+    "edge_score": 0.35,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 0.72,
+    "cloud_cost": 0.00037,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Derive Bayes' theorem from conditional probability and give an applied example.",
+    "edge_score": 0.15,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.9,
+    "cloud_cost": 0.000371,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain how a B-tree keeps operations logarithmic and why databases use it.",
+    "edge_score": 0.35,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.85,
+    "cloud_cost": 0.000371,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Design an idempotent payment API and reason about retries and exactly-once semantics.",
+    "edge_score": 0.15,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.55,
+    "cloud_cost": 0.000374,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Prove that the halting problem is undecidable, sketching the diagonalization argument.",
+    "edge_score": 0.15,
+    "edge_cost": 3e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000374,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain how consistent hashing works and why it helps with node churn.",
+    "edge_score": 0.35,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 0.83,
+    "cloud_cost": 0.000372,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Design a distributed lock and reason about failure modes and fencing tokens.",
+    "edge_score": 0.15,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 0.35,
+    "cloud_cost": 0.00037,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Derive the average-case complexity of quicksort and explain the recurrence.",
+    "edge_score": 0.15,
+    "edge_cost": 2.9e-05,
+    "cloud_score": 1.0,
+    "cloud_cost": 0.000372,
+    "edge_ok": 0
+  },
+  {
+    "prompt": "Explain how public-key cryptography enables secure key exchange, step by step.",
+    "edge_score": 0.3,
+    "edge_cost": 3e-05,
+    "cloud_score": 0.72,
+    "cloud_cost": 0.000371,
+    "edge_ok": 0
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "tau": 0.7,
+  "n": 48,
+  "edge_ok_count": 26,
+  "acc_lr": 0.688,
+  "acc_knn": 0.771,
+  "strategies": {
+    "edge-only": {
+      "quality": 0.623,
+      "cost": 0.000846,
+      "routed_edge": 48
+    },
+    "cloud-only": {
+      "quality": 0.911,
+      "cost": 0.008378,
+      "routed_edge": 0
+    },
+    "cascade (pays edge then escalates)": {
+      "quality": 0.911,
+      "cost": 0.007191,
+      "routed_edge": 26
+    },
+    "oracle (route-once perfect)": {
+      "quality": 0.911,
+      "cost": 0.006651,
+      "routed_edge": 26
+    },
+    "predictive-LR@0.4": {
+      "quality": 0.671,
+      "cost": 0.002215,
+      "routed_edge": 44
+    },
+    "predictive-LR@0.5": {
+      "quality": 0.753,
+      "cost": 0.005172,
+      "routed_edge": 33
+    },
+    "predictive-LR@0.6": {
+      "quality": 0.827,
+      "cost": 0.007119,
+      "routed_edge": 15
+    },
+    "predictive-LR@0.7": {
+      "quality": 0.911,
+      "cost": 0.008378,
+      "routed_edge": 0
+    },
+    "predictive-kNN@0.5": {
+      "quality": 0.777,
+      "cost": 0.005679,
+      "routed_edge": 33
+    }
+  }
+}
