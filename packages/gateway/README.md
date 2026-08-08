@@ -156,6 +156,27 @@ and the fix (route to a single selected cloud: -13% to -31% vs always-cloud at
 equal quality). Full analysis, including the independent-judge correction to the
 self-scored numbers above, in [`docs/EXPERIMENTS.md`](../../docs/EXPERIMENTS.md).
 
+## Multi-cloud frontier: select, don't cascade
+
+The frontier tier can be a **pool** of clouds instead of one model. Set
+`FRONTIER_POOL_JSON` and escalation reaches the frontier once, then commits to a
+**single** cloud — the best measured quality-per-dollar (`FRONTIER_SELECT=best_value`,
+default) or the cheapest — rather than walking every cloud in series.
+
+```bash
+FRONTIER_POOL_JSON='[
+  {"name":"deepseek","backend":"openai","model":"deepseek-chat","price_per_1k":0.0007,"competence":0.90},
+  {"name":"sonnet","backend":"openai","model":"claude-sonnet-5","price_per_1k":0.006,"competence":0.85},
+  {"name":"gpt5","backend":"openai","model":"gpt-5","price_per_1k":0.010,"competence":0.80}
+]'
+```
+
+This is `docs/EXPERIMENTS.md` experiment 4 shipped: walking each cloud in turn
+double-pays on every miss and loses to selecting one cloud up front, so the router
+*routes to* the frontier, it does not *walk* it. Ordering is by measured effective
+cost, not list price, since a reasoning model's real token bill only shows up after
+the fact. Adding a provider is a config entry, not a code change.
+
 ## Layout
 
 ```
