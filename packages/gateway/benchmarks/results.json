@@ -1,0 +1,333 @@
+{
+  "tiers": [
+    "edge",
+    "mid",
+    "frontier"
+  ],
+  "models": {
+    "edge": "llama3.2:1b",
+    "mid": "gemma4:e2b",
+    "frontier": "qwen2.5-coder:14b"
+  },
+  "per_tier": {
+    "edge": {
+      "quality": 0.692,
+      "latency_ms": 2706.3,
+      "tokens": 153
+    },
+    "mid": {
+      "quality": 0.417,
+      "latency_ms": 6820.0,
+      "tokens": 251.2
+    },
+    "frontier": {
+      "quality": 0.9,
+      "latency_ms": 9336.4,
+      "tokens": 160.4
+    }
+  },
+  "strategies": {
+    "edge-only": {
+      "quality": 0.692,
+      "cost": 0.000184,
+      "latency_ms": 2706.3
+    },
+    "frontier-only": {
+      "quality": 0.9,
+      "cost": 0.01925,
+      "latency_ms": 9336.4
+    },
+    "router@0.5": {
+      "quality": 0.775,
+      "cost": 0.001409,
+      "latency_ms": 4390.7,
+      "mix": {
+        "edge": 10,
+        "mid": 1,
+        "frontier": 1
+      }
+    },
+    "router@0.6": {
+      "quality": 0.9,
+      "cost": 0.007844,
+      "latency_ms": 9205.6,
+      "mix": {
+        "edge": 7,
+        "mid": 2,
+        "frontier": 3
+      }
+    },
+    "router@0.7": {
+      "quality": 0.9,
+      "cost": 0.007844,
+      "latency_ms": 9205.6,
+      "mix": {
+        "edge": 7,
+        "mid": 2,
+        "frontier": 3
+      }
+    },
+    "router@0.8": {
+      "quality": 0.9,
+      "cost": 0.007844,
+      "latency_ms": 9205.6,
+      "mix": {
+        "edge": 7,
+        "mid": 2,
+        "frontier": 3
+      }
+    },
+    "router@0.9": {
+      "quality": 0.9,
+      "cost": 0.011026,
+      "latency_ms": 11421.0,
+      "mix": {
+        "edge": 6,
+        "mid": 2,
+        "frontier": 4
+      }
+    }
+  },
+  "matrix": {
+    "e1": {
+      "edge": {
+        "score": 1.0,
+        "tokens": 40,
+        "latency_ms": 1560.3,
+        "valid": null
+      },
+      "mid": {
+        "score": 1.0,
+        "tokens": 146,
+        "latency_ms": 4623.5,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 43,
+        "latency_ms": 435.5,
+        "valid": null
+      }
+    },
+    "e2": {
+      "edge": {
+        "score": 0.5,
+        "tokens": 41,
+        "latency_ms": 1229.4,
+        "valid": null
+      },
+      "mid": {
+        "score": 1.0,
+        "tokens": 132,
+        "latency_ms": 5095.9,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 47,
+        "latency_ms": 677.2,
+        "valid": null
+      }
+    },
+    "e3": {
+      "edge": {
+        "score": 1.0,
+        "tokens": 107,
+        "latency_ms": 2272.4,
+        "valid": null
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 285,
+        "latency_ms": 7680.2,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 192,
+        "latency_ms": 11244.8,
+        "valid": null
+      }
+    },
+    "e4": {
+      "edge": {
+        "score": 1.0,
+        "tokens": 74,
+        "latency_ms": 1649.2,
+        "valid": null
+      },
+      "mid": {
+        "score": 1.0,
+        "tokens": 145,
+        "latency_ms": 5670.4,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 49,
+        "latency_ms": 1119.8,
+        "valid": null
+      }
+    },
+    "m1": {
+      "edge": {
+        "score": 1.0,
+        "tokens": 114,
+        "latency_ms": 2380.1,
+        "valid": null
+      },
+      "mid": {
+        "score": 1.0,
+        "tokens": 284,
+        "latency_ms": 7525.8,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 116,
+        "latency_ms": 5549.8,
+        "valid": null
+      }
+    },
+    "m2": {
+      "edge": {
+        "score": 1.0,
+        "tokens": 291,
+        "latency_ms": 4600.5,
+        "valid": null
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 282,
+        "latency_ms": 7685.1,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 295,
+        "latency_ms": 19554.9,
+        "valid": null
+      }
+    },
+    "m3": {
+      "edge": {
+        "score": 1.0,
+        "tokens": 125,
+        "latency_ms": 2545.5,
+        "valid": null
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 284,
+        "latency_ms": 6692.6,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 120,
+        "latency_ms": 5939.2,
+        "valid": null
+      }
+    },
+    "h1": {
+      "edge": {
+        "score": 0.5,
+        "tokens": 297,
+        "latency_ms": 4132.3,
+        "valid": null
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 287,
+        "latency_ms": 7839.9,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 301,
+        "latency_ms": 19020.2,
+        "valid": null
+      }
+    },
+    "h2": {
+      "edge": {
+        "score": 0.8,
+        "tokens": 297,
+        "latency_ms": 4371.3,
+        "valid": null
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 288,
+        "latency_ms": 7626.9,
+        "valid": null
+      },
+      "frontier": {
+        "score": 0.8,
+        "tokens": 301,
+        "latency_ms": 18958.3,
+        "valid": null
+      }
+    },
+    "h3": {
+      "edge": {
+        "score": 0.5,
+        "tokens": 296,
+        "latency_ms": 4642.7,
+        "valid": null
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 288,
+        "latency_ms": 6901.7,
+        "valid": null
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 300,
+        "latency_ms": 18921.0,
+        "valid": null
+      }
+    },
+    "s1": {
+      "edge": {
+        "score": 0.0,
+        "tokens": 72,
+        "latency_ms": 1478.4,
+        "valid": false
+      },
+      "mid": {
+        "score": 1.0,
+        "tokens": 294,
+        "latency_ms": 7584.9,
+        "valid": true
+      },
+      "frontier": {
+        "score": 1.0,
+        "tokens": 74,
+        "latency_ms": 4903.0,
+        "valid": true
+      }
+    },
+    "s2": {
+      "edge": {
+        "score": 0.0,
+        "tokens": 82,
+        "latency_ms": 1614.0,
+        "valid": false
+      },
+      "mid": {
+        "score": 0.0,
+        "tokens": 299,
+        "latency_ms": 6913.6,
+        "valid": false
+      },
+      "frontier": {
+        "score": 0.0,
+        "tokens": 87,
+        "latency_ms": 5713.6,
+        "valid": false
+      }
+    }
+  }
+}

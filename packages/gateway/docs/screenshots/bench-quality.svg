@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="260" viewBox="0 0 460 260" font-family="ui-monospace, Menlo, monospace"><rect width="460" height="260" fill="#0f1115"/>
+<text x="230" y="24" fill="#e6e9ef" font-size="14" text-anchor="middle">judge quality by tier</text>
+<rect x="60" y="99" width="100" height="111" fill="#3ddc97" rx="4"/>
+<text x="110" y="228" fill="#e6e9ef" font-size="11" text-anchor="middle">edge</text>
+<text x="110" y="93" fill="#e6e9ef" font-size="11" text-anchor="middle">0.69</text>
+<rect x="180" y="143" width="100" height="67" fill="#f7a23b" rx="4"/>
+<text x="230" y="228" fill="#e6e9ef" font-size="11" text-anchor="middle">mid</text>
+<text x="230" y="137" fill="#e6e9ef" font-size="11" text-anchor="middle">0.42</text>
+<rect x="300" y="66" width="100" height="144" fill="#5b8cff" rx="4"/>
+<text x="350" y="228" fill="#e6e9ef" font-size="11" text-anchor="middle">frontier</text>
+<text x="350" y="60" fill="#e6e9ef" font-size="11" text-anchor="middle">0.90</text>
+</svg>
