@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="280" viewBox="0 0 560 280" font-family="ui-monospace, Menlo, monospace"><rect width="560" height="280" fill="#0f1115"/>
+<text x="280" y="24" fill="#e6e9ef" font-size="14" text-anchor="middle">gold-judge quality by tier</text>
+<rect x="66" y="152" width="89" height="74" fill="#3ddc97" rx="4"/>
+<text x="110" y="244" fill="#e6e9ef" font-size="10" text-anchor="middle">edge</text>
+<text x="110" y="146" fill="#e6e9ef" font-size="11" text-anchor="middle">0.43</text>
+<rect x="179" y="91" width="89" height="135" fill="#f7a23b" rx="4"/>
+<text x="224" y="244" fill="#e6e9ef" font-size="10" text-anchor="middle">local-frontier</text>
+<text x="224" y="85" fill="#e6e9ef" font-size="11" text-anchor="middle">0.79</text>
+<rect x="292" y="82" width="89" height="144" fill="#c084fc" rx="4"/>
+<text x="336" y="244" fill="#e6e9ef" font-size="10" text-anchor="middle">cloud:sonnet</text>
+<text x="336" y="76" fill="#e6e9ef" font-size="11" text-anchor="middle">0.83</text>
+<rect x="405" y="97" width="89" height="129" fill="#e05c6e" rx="4"/>
+<text x="450" y="244" fill="#e6e9ef" font-size="10" text-anchor="middle">cloud:gpt5</text>
+<text x="450" y="91" fill="#e6e9ef" font-size="11" text-anchor="middle">0.75</text>
+</svg>

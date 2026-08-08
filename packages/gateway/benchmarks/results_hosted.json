@@ -1,0 +1,492 @@
+{
+  "judge": "claude-opus-5",
+  "tiers": [
+    "edge",
+    "local-frontier",
+    "cloud:sonnet",
+    "cloud:gpt5"
+  ],
+  "router_chain": [
+    "edge",
+    "local-frontier",
+    "cloud:gpt5",
+    "cloud:sonnet"
+  ],
+  "prices": {
+    "edge": {
+      "in_per_1k": 0.0001,
+      "out_per_1k": 0.0001
+    },
+    "local-frontier": {
+      "in_per_1k": 0.01,
+      "out_per_1k": 0.01
+    },
+    "cloud:sonnet": {
+      "in_per_1k": 0.003,
+      "out_per_1k": 0.015
+    },
+    "cloud:gpt5": {
+      "in_per_1k": 0.00125,
+      "out_per_1k": 0.01
+    }
+  },
+  "per_tier": {
+    "edge": {
+      "quality": 0.433,
+      "cost": 0.000187,
+      "latency_ms": 1746.0
+    },
+    "local-frontier": {
+      "quality": 0.785,
+      "cost": 0.01798,
+      "latency_ms": 8750.5
+    },
+    "cloud:sonnet": {
+      "quality": 0.835,
+      "cost": 0.042834,
+      "latency_ms": 3694.5
+    },
+    "cloud:gpt5": {
+      "quality": 0.748,
+      "cost": 0.068585,
+      "latency_ms": 6876.9
+    }
+  },
+  "strategies": {
+    "edge-only": {
+      "quality": 0.433,
+      "cost": 0.000187,
+      "latency_ms": 1746.0
+    },
+    "local-frontier-only": {
+      "quality": 0.785,
+      "cost": 0.01798,
+      "latency_ms": 8750.5
+    },
+    "cloud-only:sonnet": {
+      "quality": 0.835,
+      "cost": 0.042834,
+      "latency_ms": 3694.5
+    },
+    "cloud-only:gpt5": {
+      "quality": 0.748,
+      "cost": 0.068585,
+      "latency_ms": 6876.9
+    },
+    "router-2cloud@0.7": {
+      "quality": 0.833,
+      "cost": 0.070429,
+      "latency_ms": 12868.1,
+      "mix": {
+        "edge": 4,
+        "local-frontier": 5,
+        "cloud:gpt5": 0,
+        "cloud:sonnet": 3
+      }
+    },
+    "router-1cloud@0.7": {
+      "quality": 0.833,
+      "cost": 0.029412,
+      "latency_ms": 9052.8,
+      "mix": {
+        "edge": 4,
+        "local-frontier": 5,
+        "cloud:sonnet": 3
+      }
+    },
+    "router-2cloud@0.9": {
+      "quality": 0.846,
+      "cost": 0.078827,
+      "latency_ms": 13482.1,
+      "mix": {
+        "edge": 4,
+        "local-frontier": 4,
+        "cloud:gpt5": 1,
+        "cloud:sonnet": 3
+      }
+    },
+    "router-1cloud@0.9": {
+      "quality": 0.839,
+      "cost": 0.03717,
+      "latency_ms": 9456.2,
+      "mix": {
+        "edge": 4,
+        "local-frontier": 4,
+        "cloud:sonnet": 4
+      }
+    }
+  },
+  "matrix": {
+    "e1": {
+      "edge": {
+        "score": 1.0,
+        "prompt_tokens": 37,
+        "completion_tokens": 3,
+        "latency_ms": 1265.5,
+        "cost": 4e-06
+      },
+      "local-frontier": {
+        "score": 1.0,
+        "prompt_tokens": 41,
+        "completion_tokens": 2,
+        "latency_ms": 4406.6,
+        "cost": 0.00043
+      },
+      "cloud:sonnet": {
+        "score": 1.0,
+        "prompt_tokens": 21,
+        "completion_tokens": 7,
+        "latency_ms": 1329.6,
+        "cost": 0.000168
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 18,
+        "completion_tokens": 10,
+        "latency_ms": 1450.3,
+        "cost": 0.000122
+      }
+    },
+    "e2": {
+      "edge": {
+        "score": 0.2,
+        "prompt_tokens": 38,
+        "completion_tokens": 3,
+        "latency_ms": 1252.8,
+        "cost": 4e-06
+      },
+      "local-frontier": {
+        "score": 1.0,
+        "prompt_tokens": 42,
+        "completion_tokens": 5,
+        "latency_ms": 715.1,
+        "cost": 0.00047
+      },
+      "cloud:sonnet": {
+        "score": 1.0,
+        "prompt_tokens": 28,
+        "completion_tokens": 7,
+        "latency_ms": 1876.5,
+        "cost": 0.000189
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 19,
+        "completion_tokens": 77,
+        "latency_ms": 1890.1,
+        "cost": 0.000794
+      }
+    },
+    "e3": {
+      "edge": {
+        "score": 0.1,
+        "prompt_tokens": 36,
+        "completion_tokens": 78,
+        "latency_ms": 1117.2,
+        "cost": 1.1e-05
+      },
+      "local-frontier": {
+        "score": 1.0,
+        "prompt_tokens": 42,
+        "completion_tokens": 22,
+        "latency_ms": 2002.9,
+        "cost": 0.00064
+      },
+      "cloud:sonnet": {
+        "score": 1.0,
+        "prompt_tokens": 30,
+        "completion_tokens": 95,
+        "latency_ms": 2420.7,
+        "cost": 0.001515
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 17,
+        "completion_tokens": 460,
+        "latency_ms": 6418.6,
+        "cost": 0.004621
+      }
+    },
+    "e4": {
+      "edge": {
+        "score": 1.0,
+        "prompt_tokens": 34,
+        "completion_tokens": 40,
+        "latency_ms": 638.4,
+        "cost": 7e-06
+      },
+      "local-frontier": {
+        "score": 1.0,
+        "prompt_tokens": 38,
+        "completion_tokens": 11,
+        "latency_ms": 1156.8,
+        "cost": 0.00049
+      },
+      "cloud:sonnet": {
+        "score": 1.0,
+        "prompt_tokens": 19,
+        "completion_tokens": 269,
+        "latency_ms": 3672.9,
+        "cost": 0.004092
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 15,
+        "completion_tokens": 12,
+        "latency_ms": 1187.4,
+        "cost": 0.000139
+      }
+    },
+    "m1": {
+      "edge": {
+        "score": 0.55,
+        "prompt_tokens": 41,
+        "completion_tokens": 74,
+        "latency_ms": 1087.3,
+        "cost": 1.2e-05
+      },
+      "local-frontier": {
+        "score": 0.95,
+        "prompt_tokens": 45,
+        "completion_tokens": 61,
+        "latency_ms": 4972.0,
+        "cost": 0.00106
+      },
+      "cloud:sonnet": {
+        "score": 0.98,
+        "prompt_tokens": 26,
+        "completion_tokens": 137,
+        "latency_ms": 3525.8,
+        "cost": 0.002133
+      },
+      "cloud:gpt5": {
+        "score": 0.98,
+        "prompt_tokens": 21,
+        "completion_tokens": 289,
+        "latency_ms": 5073.9,
+        "cost": 0.002916
+      }
+    },
+    "m2": {
+      "edge": {
+        "score": 1.0,
+        "prompt_tokens": 35,
+        "completion_tokens": 256,
+        "latency_ms": 3266.7,
+        "cost": 2.9e-05
+      },
+      "local-frontier": {
+        "score": 0.85,
+        "prompt_tokens": 39,
+        "completion_tokens": 256,
+        "latency_ms": 19710.6,
+        "cost": 0.00295
+      },
+      "cloud:sonnet": {
+        "score": 0.92,
+        "prompt_tokens": 21,
+        "completion_tokens": 512,
+        "latency_ms": 5338.7,
+        "cost": 0.007743
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 16,
+        "completion_tokens": 691,
+        "latency_ms": 7426.7,
+        "cost": 0.00693
+      }
+    },
+    "m3": {
+      "edge": {
+        "score": 1.0,
+        "prompt_tokens": 38,
+        "completion_tokens": 83,
+        "latency_ms": 1203.0,
+        "cost": 1.2e-05
+      },
+      "local-frontier": {
+        "score": 1.0,
+        "prompt_tokens": 42,
+        "completion_tokens": 89,
+        "latency_ms": 7135.8,
+        "cost": 0.00131
+      },
+      "cloud:sonnet": {
+        "score": 1.0,
+        "prompt_tokens": 27,
+        "completion_tokens": 127,
+        "latency_ms": 3563.3,
+        "cost": 0.001986
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 19,
+        "completion_tokens": 212,
+        "latency_ms": 3100.2,
+        "cost": 0.002144
+      }
+    },
+    "h1": {
+      "edge": {
+        "score": 0.1,
+        "prompt_tokens": 41,
+        "completion_tokens": 256,
+        "latency_ms": 3204.4,
+        "cost": 3e-05
+      },
+      "local-frontier": {
+        "score": 0.85,
+        "prompt_tokens": 45,
+        "completion_tokens": 256,
+        "latency_ms": 19922.0,
+        "cost": 0.00301
+      },
+      "cloud:sonnet": {
+        "score": 0.92,
+        "prompt_tokens": 26,
+        "completion_tokens": 512,
+        "latency_ms": 4840.7,
+        "cost": 0.007758
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 22,
+        "completion_tokens": 837,
+        "latency_ms": 7367.3,
+        "cost": 0.008398
+      }
+    },
+    "h2": {
+      "edge": {
+        "score": 0.15,
+        "prompt_tokens": 41,
+        "completion_tokens": 256,
+        "latency_ms": 3375.5,
+        "cost": 3e-05
+      },
+      "local-frontier": {
+        "score": 0.42,
+        "prompt_tokens": 45,
+        "completion_tokens": 256,
+        "latency_ms": 20535.5,
+        "cost": 0.00301
+      },
+      "cloud:sonnet": {
+        "score": 0.6,
+        "prompt_tokens": 34,
+        "completion_tokens": 512,
+        "latency_ms": 7080.4,
+        "cost": 0.007782
+      },
+      "cloud:gpt5": {
+        "score": 0.0,
+        "prompt_tokens": 21,
+        "completion_tokens": 2000,
+        "latency_ms": 26443.6,
+        "cost": 0.020026
+      }
+    },
+    "h3": {
+      "edge": {
+        "score": 0.1,
+        "prompt_tokens": 40,
+        "completion_tokens": 256,
+        "latency_ms": 3225.2,
+        "cost": 3e-05
+      },
+      "local-frontier": {
+        "score": 0.35,
+        "prompt_tokens": 44,
+        "completion_tokens": 256,
+        "latency_ms": 19870.3,
+        "cost": 0.003
+      },
+      "cloud:sonnet": {
+        "score": 0.6,
+        "prompt_tokens": 31,
+        "completion_tokens": 512,
+        "latency_ms": 5800.9,
+        "cost": 0.007773
+      },
+      "cloud:gpt5": {
+        "score": 0.0,
+        "prompt_tokens": 21,
+        "completion_tokens": 2000,
+        "latency_ms": 17032.8,
+        "cost": 0.020026
+      }
+    },
+    "s1": {
+      "edge": {
+        "score": 0.0,
+        "prompt_tokens": 46,
+        "completion_tokens": 32,
+        "latency_ms": 552.1,
+        "cost": 8e-06
+      },
+      "local-frontier": {
+        "score": 1.0,
+        "prompt_tokens": 51,
+        "completion_tokens": 23,
+        "latency_ms": 2034.3,
+        "cost": 0.00074
+      },
+      "cloud:sonnet": {
+        "score": 1.0,
+        "prompt_tokens": 40,
+        "completion_tokens": 47,
+        "latency_ms": 2681.1,
+        "cost": 0.000825
+      },
+      "cloud:gpt5": {
+        "score": 1.0,
+        "prompt_tokens": 27,
+        "completion_tokens": 147,
+        "latency_ms": 2824.0,
+        "cost": 0.001504
+      }
+    },
+    "s2": {
+      "edge": {
+        "score": 0.0,
+        "prompt_tokens": 47,
+        "completion_tokens": 51,
+        "latency_ms": 764.2,
+        "cost": 1e-05
+      },
+      "local-frontier": {
+        "score": 0.0,
+        "prompt_tokens": 56,
+        "completion_tokens": 31,
+        "latency_ms": 2544.5,
+        "cost": 0.00087
+      },
+      "cloud:sonnet": {
+        "score": 0.0,
+        "prompt_tokens": 45,
+        "completion_tokens": 49,
+        "latency_ms": 2203.1,
+        "cost": 0.00087
+      },
+      "cloud:gpt5": {
+        "score": 0.0,
+        "prompt_tokens": 28,
+        "completion_tokens": 93,
+        "latency_ms": 2307.7,
+        "cost": 0.000965
+      }
+    }
+  },
+  "router_chain_multi": [
+    "edge",
+    "local-frontier",
+    "cloud:gpt5",
+    "cloud:sonnet"
+  ],
+  "router_chain_single": [
+    "edge",
+    "local-frontier",
+    "cloud:sonnet"
+  ]
+}
