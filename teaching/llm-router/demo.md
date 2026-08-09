@@ -24,7 +24,7 @@ PYTHONPATH=src python -m router.cli "What is the capital of France?"
 PYTHONPATH=src python -m router.cli --schema service,root_cause \
   "Extract the failing service and root cause from this incident log"
 ```
-指着说:这就是 quality gate,不是 error fallback。弱档能生成但过不了 strict JSON,于是升级。
+指着说:这就是 quality gate,不是 error fallback。edge 没过 gate 就升级,最终落在一个回复能通过的档,输出是合法 JSON。注意看它给的升级原因,可能是 confidence 低于阈值,也可能是 schema 没过,两者都会触发升级,这正是 quality-aware fallback。
 
 ## Demo 2:router vs baseline,对应讲稿 05-15
 
