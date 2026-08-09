@@ -74,7 +74,9 @@ serving 经济学,切到"自己养卡划不划算"。真跑 Qwen2.5-72B on A100�
 - vLLM continuous batching 给 12.1 倍吞吐,对比本地 Ollama 只有 1.1 倍。解释为什么:vLLM 打包整批,Ollama 一次一条。这是"会调 API"和"会 serve model"的分水岭。
 - 但即使批到 12 倍,自建 72B 到 c=32 仍比 DeepSeek 的 API 贵。盈亏平衡要到近满载 24/7。
 
-demo 时机:展示 serving 那张吞吐和成本曲线,指着 break-even 那条虚线讲。
+myth-busting 时刻,全场最好玩的一处。抛问题让学员先猜:更快更贵的 GPU,每 token 是更便宜还是更贵。多数人会说更便宜,因为它快。上真数:同一个 72B,H100 每 token 贵约一倍,3.23 对 A100 的 1.52。为什么。单流两者都 18 tok/s,c=32 时 H100 只快 14 percent,但每小时贵 2.4 倍。机理:72B 的 decode 是 memory-bandwidth-bound,4K context、并发 32 时 batch 撑不满 H100 的算力,算力闲着。把这句钉死:贵卡每 token 更省是关于 saturation,不是关于标称速度,要贵卡赢得进 compute-bound 区。这是用自己的数据打破直觉的一刻,学员会记很久。
+
+demo 时机:并排展示 A100 和 H100 两张吞吐成本曲线,指着 break-even 虚线,再指两张图的 dollar per 1M 差,把 myth-busting 落到图上。
 
 ## 50-60 主线收束 + Q&A
 

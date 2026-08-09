@@ -84,6 +84,13 @@ cat serving/results_serving.json | python3 -m json.tool
 ```
 指着两条线:绿线吞吐 c=1 到 c=32 涨 12.1 倍,蓝线成本降,蓝虚线是 DeepSeek 的 break-even 价。讲即使批 12 倍,自建 72B 到 c=32 仍在虚线之上,要近满载才追平。
 
+myth-busting,并排打开 H100 那张:
+```bash
+open docs/screenshots/serving-throughput-h100.svg
+python3 -c "import json; a=json.load(open('serving/results_serving.json')); h=json.load(open('serving/results_serving_h100.json')); f=lambda d:[l for l in d['levels'] if l['concurrency']==32][0]; print('A100 %s/hr c=32: %s tok/s, \$%.2f/1M'%(a['gpu_hourly'],f(a)['tok_per_s'],f(a)['cost_per_1m_out'])); print('H100 %s/hr c=32: %s tok/s, \$%.2f/1M'%(h['gpu_hourly'],f(h)['tok_per_s'],f(h)['cost_per_1m_out']))"
+```
+先让学员猜更快更贵的 H100 每 token 更便宜还是更贵,再打印这两行:H100 只快 14 percent 却每 token 贵约一倍。讲 memory-bandwidth-bound 的机理,钉死"贵卡更省是关于 saturation 不是标称速度"。
+
 想现场感受 batching 反差,对着本地 Ollama 跑一次,增益接近 1,正好当反例:
 ```bash
 SERVE_BASE_URL=http://localhost:11434/v1 SERVE_MODEL=qwen2.5-coder:14b \

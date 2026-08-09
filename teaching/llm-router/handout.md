@@ -62,6 +62,8 @@ frontier 档做成一个 cloud pool。升级到 frontier 一次,pool 只选一�
 - vLLM continuous batching 给 12.1 倍吞吐,c=1 的 18 tok/s 到 c=32 的 218。对比本地 Ollama 只有 1.1 倍,因为 Ollama 一次一条,vLLM 打包整批。
 - cost-per-token 随并发下降,从 18 dollar per 1M 到 1.52。但到 c=32 仍高于 DeepSeek 的约 1.10。盈亏平衡在约 300 tok/s,即要 A100 近满载 24/7 才追平按量付费 API。
 
+更快更贵的 GPU 不等于每 token 更便宜。同一个 72B,secure H100 是 2.89 dollar per hour,community A100 是 1.19。单流两者都是 18 tok/s;c=32 时 H100 只快约 14 percent 到 249 tok/s,但每小时贵 2.4 倍,于是每 token 成本 3.23 对 A100 的 1.52,H100 反而贵约一倍。原因是 72B-AWQ 的 decode 属于 memory-bandwidth-bound,4K context、并发 32 时 batch 撑不满 H100 的算力,算力闲着。结论:"贵卡每 token 更便宜"是关于 saturation,不是关于标称速度;要贵卡赢,得进 compute-bound 区,即更大 batch、更长 context、更高并发。
+
 ## 9. 主线,记住这一条
 
 router 和自建 GPU 都不是自动更便宜。便宜又强的开源托管模型,比如 DeepSeek,在质量和成本上双杀两个专有 frontier,持续侵蚀"聪明路由"和"自己养卡"的经济性。
