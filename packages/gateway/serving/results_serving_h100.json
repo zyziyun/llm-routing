@@ -1,0 +1,67 @@
+{
+  "model": "Qwen/Qwen2.5-72B-Instruct-AWQ",
+  "base_url": "https://0lvjy12glqa94x-8000.proxy.runpod.net/v1",
+  "gpu_hourly": 2.89,
+  "hosted_price_per_1m": 1.1,
+  "max_tokens": 128,
+  "reqs_per_level": 24,
+  "single_latency_ms": 7176.3,
+  "ttft_ms": 495.6,
+  "levels": [
+    {
+      "concurrency": 1,
+      "wall_s": 169.19,
+      "output_tokens": 3072,
+      "tok_per_s": 18.2,
+      "req_per_s": 0.14,
+      "cost_per_1m_out": 44.2142,
+      "batching_gain": 1.0
+    },
+    {
+      "concurrency": 2,
+      "wall_s": 86.86,
+      "output_tokens": 3072,
+      "tok_per_s": 35.4,
+      "req_per_s": 0.28,
+      "cost_per_1m_out": 22.698,
+      "batching_gain": 1.95
+    },
+    {
+      "concurrency": 4,
+      "wall_s": 44.89,
+      "output_tokens": 3072,
+      "tok_per_s": 68.4,
+      "req_per_s": 0.53,
+      "cost_per_1m_out": 11.7305,
+      "batching_gain": 3.76
+    },
+    {
+      "concurrency": 8,
+      "wall_s": 24.23,
+      "output_tokens": 3072,
+      "tok_per_s": 126.8,
+      "req_per_s": 0.99,
+      "cost_per_1m_out": 6.3307,
+      "batching_gain": 6.97
+    },
+    {
+      "concurrency": 16,
+      "wall_s": 17.46,
+      "output_tokens": 3072,
+      "tok_per_s": 176.0,
+      "req_per_s": 1.37,
+      "cost_per_1m_out": 4.5617,
+      "batching_gain": 9.67
+    },
+    {
+      "concurrency": 32,
+      "wall_s": 12.34,
+      "output_tokens": 3072,
+      "tok_per_s": 248.9,
+      "req_per_s": 1.94,
+      "cost_per_1m_out": 3.2253,
+      "batching_gain": 13.68
+    }
+  ],
+  "break_even_concurrency": null
+}
