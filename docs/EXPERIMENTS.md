@@ -365,6 +365,37 @@ gap that makes clever routing pay. Predictive routing is the right architecture,
 its ceiling wins, and closing the gap to that ceiling is a predictor problem —
 which is exactly why RouteLLM trains on 80k battles, not 48 prompts.
 
+## Experiment 8: does a faster, pricier GPU cost less per token?
+
+A common serving claim: an expensive GPU can be *cheaper per token* because it
+runs so much faster that its higher hourly rate is amortized at saturation. This
+tests it directly by rerunning experiment 6 on an H100 and comparing to the A100,
+same model, same sweep. Community H100 was sold out, so this ran on a secure H100
+at $2.89/hr against the community A100 at $1.19/hr.
+
+![H100 serving throughput and cost](../packages/gateway/docs/screenshots/serving-throughput-h100.svg)
+
+| At concurrency 32 | tokens/s | batching gain | GPU $/hr | $/1M output |
+|---|---|---|---|---|
+| A100 80GB | 218 | 12.1x | $1.19 | **$1.52** |
+| H100 PCIe | 249 | 13.7x | $2.89 | **$3.23** |
+
+**For this workload the claim is false — the H100 costs about 2x more per token.**
+At single stream both GPUs decode at an identical 18 tokens/s, and at 32 concurrent
+the H100 leads by only ~14% (249 vs 218). But it costs 2.4x more per hour, so its
+cost per token is roughly double the A100's. The reason: 72B-AWQ *decoding* is
+memory-bandwidth-bound, not compute-bound, and at 4K context with at most 32
+concurrent the batch never grows large enough to use the H100's extra compute. A
+faster GPU only wins on cost per token when it delivers proportionally more
+throughput, which needs a compute-bound regime — much larger batches, longer
+context, or higher concurrency than this. The "expensive GPU is cheaper" rule is
+real, but it is a statement about saturation, not about the sticker speed.
+
+Honest caveats: the tiers were unequal (A100 community vs H100 secure); even at a
+community H100 near $1.99/hr the cost would be ~$2.22/1M, still worse than the
+A100's $1.52. And neither self-hosted GPU beats DeepSeek's ~$1.10/1M here, which
+only sharpens experiment 6's conclusion.
+
 ## What this validates
 
 - SLM-first with an escalation gate reproduces on real models: most traffic
