@@ -76,7 +76,7 @@ Prometheus scrape.
 # server-side gateway (Python) — runs offline on mock providers, no keys
 cd packages/gateway
 pip install -r requirements.lock
-PYTHONPATH=src pytest -q                       # 13 tests
+PYTHONPATH=src pytest -q                       # 24 tests
 PYTHONPATH=src uvicorn gateway.app:app --port 8000
 
 # on-device client (TypeScript) — routing core tests in Node, no browser
